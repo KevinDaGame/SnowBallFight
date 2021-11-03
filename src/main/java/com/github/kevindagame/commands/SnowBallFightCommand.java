@@ -23,7 +23,7 @@ public class SnowBallFightCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         switch (args[0]) {
             case "start":
-                snowBallFight.setGame(new Game(snowBallFight, 2));
+                snowBallFight.setGame(new Game(snowBallFight, 2, 10, 5));
                 return true;
             case "give":
                 if(commandSender instanceof Player){

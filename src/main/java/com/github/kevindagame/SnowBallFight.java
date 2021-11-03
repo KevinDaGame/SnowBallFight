@@ -10,7 +10,7 @@ public class SnowBallFight extends JavaPlugin {
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
-        getServer().getPluginManager().registerEvents(new SnowBallHit(), this);
+        getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
         getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
     }
     @Override

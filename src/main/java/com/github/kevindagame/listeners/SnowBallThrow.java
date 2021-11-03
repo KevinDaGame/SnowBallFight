@@ -1,6 +1,7 @@
 package com.github.kevindagame.listeners;
 
 import com.github.kevindagame.Game;
+import com.github.kevindagame.RoundStatus;
 import com.github.kevindagame.SnowBallFight;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -45,16 +46,20 @@ public class SnowBallThrow implements Listener {
                         event.setCancelled(true);
                         return;
                     }
+                    if(snowBallFight.getGame().getRoundStatus() != RoundStatus.RUNNING){
+                        event.setCancelled(true);
+                        return;
+                    }
+                        event.getEntity().setMetadata("sbf", new FixedMetadataValue(snowBallFight, true));
+                        ItemStack item = new ItemStack(Material.SNOWBALL, 1);
+                        item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, new Runnable() {
+                            @Override
+                            public void run() {
+                                p.getInventory().setItemInMainHand(item);
+                            }
+                        }, delay);
 
-                    event.getEntity().setMetadata("sbf", new FixedMetadataValue(snowBallFight, true));
-                    ItemStack item = new ItemStack(Material.SNOWBALL, 1);
-                    item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, new Runnable() {
-                        @Override
-                        public void run() {
-                            p.getInventory().setItemInMainHand(item);
-                        }
-                    }, delay);
                 }
                 else{
                     return;
