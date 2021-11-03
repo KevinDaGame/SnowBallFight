@@ -1,0 +1,16 @@
+name: 'SnowBallFight'
+version: 0.01
+main: com.github.kevindagame.SnowBallFight
+api-version: 1.16
+author: KevinDaGame
+description:  Custom snowball fight plugin
+permissions:
+  sbf.admin:
+    default: op
+commands:
+  snowballfight:
+    description: Main comand
+    permission: sbf.admin
+    aliases:
+      - sbf
+
