@@ -25,6 +25,7 @@ public class Game {
         timer = new Timer(snowBallFight, this, rounds, timePerRound, timeBetweenRound,
                 () -> { // after game
                     Bukkit.broadcastMessage("game done");
+                    handleGameEnd();
                 },
                 (t) -> { // after each round
                     Bukkit.broadcastMessage("round done");
@@ -37,6 +38,11 @@ public class Game {
     private void handleNextRound(Timer timer) {
 
         timer.betweenRound();
+    }
+
+    private void handleGameEnd(){
+        snowBallFight.stopGame();
+
     }
 
     public void setRoundStatus(RoundStatus status){
