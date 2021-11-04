@@ -12,4 +12,8 @@ public class SpawnPoint {
         this.z = z;
         this.world = world;
     }
+
+    public String toString(){
+        return "X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + world;
+    }
 }

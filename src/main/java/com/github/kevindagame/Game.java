@@ -8,24 +8,27 @@ public class Game {
     private final int rounds;
     private final int timePerRound;
     private final int timeBetweenRound;
+    private final Arena arena;
     private Timer timer;
     private int task;
     private RoundStatus status;
     private Scoreboard scoreboard;
 
-    public Game(SnowBallFight snowBallFight, int rounds, int timePerRound, int timeBetweenRound) {
+    public Game(SnowBallFight snowBallFight, int rounds, int timePerRound, int timeBetweenRound, Arena arena) {
         this.snowBallFight = snowBallFight;
         this.rounds = rounds;
         this.timePerRound = timePerRound;
         this.timeBetweenRound = timeBetweenRound;
+        this.arena = arena;
         start();
     }
 
-    public Game(SnowBallFight snowBallFight) {
+    public Game(SnowBallFight snowBallFight, Arena arena) {
         this.snowBallFight = snowBallFight;
         this.rounds = snowBallFight.getDefaultRounds();
         this.timePerRound = snowBallFight.getDefaultTimePerRound();
         this.timeBetweenRound = snowBallFight.getDefaultTimeBetweenRound();
+        this.arena = arena;
         start();
     }
 
@@ -56,7 +59,9 @@ public class Game {
 
     private void handleGameEnd(){
         snowBallFight.stopGame();
-//        scoreboard.stop();
+        for (Player p: Bukkit.getOnlinePlayers()) {
+            scoreboard.clearScoreBoard(p);
+        }
 
     }
 
@@ -75,5 +80,9 @@ public class Game {
         if(status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
         else if(status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
         return "error";
+    }
+
+    public Arena getArena() {
+        return arena;
     }
 }

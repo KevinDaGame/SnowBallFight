@@ -2,13 +2,29 @@ package com.github.kevindagame;
 
 import org.bukkit.Location;
 
-public class Arena {
-    public String region;
-    SpawnPoint[] spawns;
+import java.util.ArrayList;
 
-    public Arena(String region, SpawnPoint[] spawns) {
+public class Arena {
+    String region;
+    ArrayList<SpawnPoint> spawns;
+    String world;
+
+    public String getRegion() {
+        return region;
+    }
+
+    public ArrayList<SpawnPoint> getSpawns() {
+        return spawns;
+    }
+
+    public String getWorld() {
+        return world;
+    }
+
+    public Arena(String region, String world) {
         this.region = region;
-        this.spawns = spawns;
+        this.spawns = new ArrayList<>();
+        this.world = world;
 
 
     }

@@ -43,4 +43,8 @@ public class Scoreboard {
 
     }
 
+    public void clearScoreBoard(Player p){
+        p.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+    }
+
 }
