@@ -23,7 +23,7 @@ public class SnowBallHit implements Listener {
             if (event.getEntity().hasMetadata("sbf") || snowBallFight.getGame() != null) {
                 if (snowBallFight.getGame().getRoundStatus() == RoundStatus.RUNNING) {
                     if (event.getHitEntity() != null && event.getHitEntity() instanceof Player) {
-                        ((Player) event.getHitEntity()).damage(5);
+                        ((Player) event.getHitEntity()).damage(damage);
                     }
                 }
             }

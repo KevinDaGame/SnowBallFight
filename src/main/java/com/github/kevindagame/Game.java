@@ -10,7 +10,6 @@ public class Game {
     private final int timeBetweenRound;
     private final Arena arena;
     private Timer timer;
-    private int task;
     private RoundStatus status;
     private Scoreboard scoreboard;
 

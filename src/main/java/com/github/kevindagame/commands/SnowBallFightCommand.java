@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -79,7 +78,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                             return true;
                         }
                         if(snowBallFight.addArena(args[2].toLowerCase(), world, args[4])){
-                            commandSender.sendMessage("succesfully created arena with name: " + args[2].toLowerCase());
+                            commandSender.sendMessage("successfully created arena with name: " + args[2].toLowerCase());
                             return true;
                         }
 
@@ -97,7 +96,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                             return true;
                         }
                             snowBallFight.removeArena(args[2]);
-                            commandSender.sendMessage("Succesfully removed arena " + args[2].toLowerCase());
+                            commandSender.sendMessage("Successfully removed arena " + args[2].toLowerCase());
                             return true;
                     case "list":
                         sendArenasList(commandSender);

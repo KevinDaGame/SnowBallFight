@@ -7,11 +7,8 @@ import com.github.kevindagame.listeners.SnowBallThrow;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,14 +22,11 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
 public class SnowBallFight extends JavaPlugin {
     private Game game;
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private HashMap<String, Arena> arenas;
     private File arenasFile;
     private File configFile;
@@ -42,6 +36,7 @@ public class SnowBallFight extends JavaPlugin {
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
         getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
+
         getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
         getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
 

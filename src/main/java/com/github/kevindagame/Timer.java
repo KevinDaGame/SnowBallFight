@@ -67,9 +67,6 @@ public class Timer implements Runnable{
         if(counter >= timePerRound * 10){
             afterRound();
         }
-//        if(counter % 10 == 0){
-//            Bukkit.broadcastMessage("Time remaining: " + (timePerRound - counter/10) + "seconds");
-//        }
     }
 
     public void betweenRound() {
@@ -83,7 +80,6 @@ public class Timer implements Runnable{
                     startRoundTimer();
                 }
                 else{
-//                    Bukkit.broadcastMessage("Time until next round: " + (timeBetweenRound - counter) + " seconds");
                     betweenCounter++;
                 }
             }

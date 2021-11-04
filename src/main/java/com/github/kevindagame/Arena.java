@@ -1,7 +1,5 @@
 package com.github.kevindagame;
 
-import org.bukkit.Location;
-
 import java.util.ArrayList;
 
 public class Arena {

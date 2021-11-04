@@ -8,7 +8,6 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -32,10 +31,7 @@ public class SnowBallThrow implements Listener {
         if (event.getEntity() instanceof Snowball) {
             if (event.getEntity().getShooter() instanceof Player) {
                 Player p = (Player) event.getEntity().getShooter();
-                ItemStack i;
-                if (p.getInventory().getItemInMainHand().getType() == Material.SNOWBALL) {
-                    i = p.getInventory().getItemInMainHand();
-                } else {
+                if (p.getInventory().getItemInMainHand().getType() != Material.SNOWBALL) {
                     return;
                 }
                 if (snowBallFight.getGame() == null) {

@@ -1,6 +1,5 @@
 package com.github.kevindagame.commands;
 
-import com.github.kevindagame.Arena;
 import com.github.kevindagame.SnowBallFight;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -8,7 +7,6 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SnowBallFightTabCompleter implements TabCompleter {
