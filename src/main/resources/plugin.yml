@@ -7,6 +7,8 @@ description:  Custom snowball fight plugin
 permissions:
   sbf.admin:
     default: op
+
+depend: [WorldGuard]
 commands:
   snowballfight:
     description: Main comand
