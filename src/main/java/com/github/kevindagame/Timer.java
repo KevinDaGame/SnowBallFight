@@ -16,6 +16,7 @@ public class Timer implements Runnable{
     private int betweenRoundTaskID;
     private int roundsRan;
     private int counter;
+    private int betweenCounter;
 
 
     public Timer(SnowBallFight snowBallFight, Game game, int rounds, int timePerRound, int timeBetweenRound, Runnable gameEnd, Consumer<Timer> everyRound) {
@@ -41,17 +42,18 @@ public class Timer implements Runnable{
 
     public void stopRoundTimer() {
         Bukkit.getScheduler().cancelTask(roundTaskID);
+        counter = 0;
 
     }
     public void stopBetweenRoundTimer() {
         Bukkit.getScheduler().cancelTask(betweenRoundTaskID);
+        betweenCounter = 0;
 
     }
 
     public void startRoundTimer() {
         Bukkit.broadcastMessage("starting round");
         game.setRoundStatus(RoundStatus.RUNNING);
-        counter = 0;
         roundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, this, 2, 2);
     }
 
@@ -73,20 +75,32 @@ public class Timer implements Runnable{
     public void betweenRound() {
         game.setRoundStatus(RoundStatus.BETWEEN);
         Runnable runnable = new Runnable() {
-            private int counter = 0;
             @Override
             public void run() {
-                if(counter >= timeBetweenRound){
+                if(betweenCounter >= timeBetweenRound){
                     stopBetweenRoundTimer();
 
                     startRoundTimer();
                 }
                 else{
 //                    Bukkit.broadcastMessage("Time until next round: " + (timeBetweenRound - counter) + " seconds");
-                    counter++;
+                    betweenCounter++;
                 }
             }
         };
         betweenRoundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, runnable, 0, 20);
+    }
+
+    public int getSecondsUntilRoundStart(){
+        if(betweenCounter != 0){
+            return timeBetweenRound - betweenCounter;
+        }
+        return -1;
+    }
+    public int getSecondsUntilRoundEnd(){
+        if(counter != 0){
+            return timePerRound - (counter / 10);
+        }
+        return -1;
     }
 }

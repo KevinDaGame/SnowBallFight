@@ -9,6 +9,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -27,6 +30,8 @@ public class SnowBallFight extends JavaPlugin {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public Map<String, Arena> arenas;
     private File arenasFile;
+    private File configFile;
+    private FileConfiguration config;
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
@@ -35,8 +40,20 @@ public class SnowBallFight extends JavaPlugin {
         getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
 
         arenasFile = new File(getDataFolder(), "arenas.json");
+        configFile = new File(getDataFolder(), "config.yml");
 
         if (!arenasFile.exists()) saveResource(arenasFile.getName(), false);
+        if (!configFile.exists()) saveResource(configFile.getName(), false);
+
+        config = new YamlConfiguration();
+        try{
+            config.load(configFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+        System.out.println("default rounds: " + config.get("default amount of rounds"));
+        System.out.println("time per round: " + config.get("default time per round"));
+        System.out.println("time between round: " + config.get("default time between round"));
 
         try {
             Type type = new TypeToken<HashMap<String, Arena>>(){}.getType();
@@ -53,17 +70,18 @@ public class SnowBallFight extends JavaPlugin {
     }
     @Override
     public void onDisable() {
-        getLogger().info("onDisable is called!");
-        String json = gson.toJson(arenas); // Remember pretty printing? This is needed here.
-        arenasFile.delete(); // won't throw an exception, don't worry.
+        updateArenasFile();
+    }
+
+    private void updateArenasFile(){
+        String json = gson.toJson(arenas);
+        arenasFile.delete();
         try {
             Files.write(arenasFile.toPath(), json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE); // java.nio.Files
         } catch (IOException e) {
             System.out.println("Snowballfight: Error on saving arenas!!!!!");
         }
     }
-
-
     public Game getGame(){
         return game;
     }
@@ -74,5 +92,17 @@ public class SnowBallFight extends JavaPlugin {
 
     public void stopGame() {
         this.game = null;
+    }
+
+    public int getDefaultRounds() {
+        return config.getInt("default amount of rounds");
+    }
+
+    public int getDefaultTimePerRound() {
+        return config.getInt("default time per round");
+    }
+
+    public int getDefaultTimeBetweenRound() {
+        return config.getInt("default time between round");
     }
 }

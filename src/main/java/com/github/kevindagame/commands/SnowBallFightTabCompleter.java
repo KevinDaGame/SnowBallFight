@@ -25,6 +25,11 @@ public class SnowBallFightTabCompleter implements TabCompleter {
             completion.add("start");
             return completion;
         }
+
+        if(args.length == 2){
+            completion.add("YEET");
+            return completion;
+        }
         return null;
     }
 }
