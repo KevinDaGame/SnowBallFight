@@ -1,0 +1,4 @@
+#all time formats are in seconds
+default time per round: 60
+default time between round: 20
+default amount of rounds: 3
