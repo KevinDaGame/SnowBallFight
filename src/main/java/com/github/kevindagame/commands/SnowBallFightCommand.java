@@ -49,6 +49,10 @@ public class SnowBallFightCommand implements CommandExecutor {
             case "join":
                 if (commandSender instanceof Player) {
                     Player p = (Player) commandSender;
+                    if(snowBallFight.getGame() == null){
+                        commandSender.sendMessage("There is no current game!");
+                        return true;
+                    }
                     if(snowBallFight.getGame().hasPlayer(p)){
                         commandSender.sendMessage("you already joined you dumbass");
                         return true;
