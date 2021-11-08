@@ -1,11 +1,9 @@
 package com.github.kevindagame.commands;
 
-import com.github.kevindagame.Arena;
-import com.github.kevindagame.Game;
-import com.github.kevindagame.SnowBallFight;
-import com.github.kevindagame.SpawnPoint;
+import com.github.kevindagame.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -27,18 +25,37 @@ public class SnowBallFightCommand implements CommandExecutor {
             showHelp(commandSender);
         }
         switch (args[0]) {
-            case "start":
+            case "create":
                 if (args.length == 1) {
                     commandSender.sendMessage("You did not specify any arguments, specify at least an arena!");
+                    return true;
                 }
                 if (args.length == 2) {
                     Arena arena = snowBallFight.getArenas().get(args[1].toLowerCase());
                     if (arena != null) {
                         snowBallFight.setGame(new Game(snowBallFight, arena));
+                        commandSender.sendMessage("succesfully created game");
+                        return true;
                     } else {
                         commandSender.sendMessage("There is no arena with that name!");
+                        return true;
                     }
                 }
+            case "start":
+                if (snowBallFight.getGame() != null) {
+                    if (snowBallFight.getGame().getRoundStatus() == RoundStatus.STARTING) {
+                        if (snowBallFight.getGame().getPlayers().size() >= 2) {
+                            snowBallFight.getGame().start();
+                            return true;
+
+                        }
+                        commandSender.sendMessage("This game needs 2 players to start");
+                        return true;
+                    }
+                    commandSender.sendMessage("Sorry, this game has already been started");
+                    return true;
+                }
+                commandSender.sendMessage("You need to create a game first before you can start it!");
                 return true;
             case "give":
                 if (commandSender instanceof Player) {
@@ -46,14 +63,15 @@ public class SnowBallFightCommand implements CommandExecutor {
                     ((Player) commandSender).getInventory().addItem(snowball);
 
                 }
+                return true;
             case "join":
                 if (commandSender instanceof Player) {
                     Player p = (Player) commandSender;
-                    if(snowBallFight.getGame() == null){
+                    if (snowBallFight.getGame() == null) {
                         commandSender.sendMessage("There is no current game!");
                         return true;
                     }
-                    if(snowBallFight.getGame().hasPlayer(p)){
+                    if (snowBallFight.getGame().hasPlayer(p)) {
                         commandSender.sendMessage("you already joined you dumbass");
                         return true;
                     }
@@ -98,7 +116,27 @@ public class SnowBallFightCommand implements CommandExecutor {
                             commandSender.sendMessage("successfully created arena with name: " + args[2].toLowerCase());
                             return true;
                         }
-
+                    case "teams":
+                        if(args[2] != null){
+                            switch(args[2]){
+                                case "add":
+                                    if(!(commandSender instanceof Player)){
+                                        commandSender.sendMessage("Sorry, only players can create teams");
+                                        return true;
+                                    }
+                                    if(args.length == 5){
+                                        Location l = ((Player) commandSender).getLocation();
+                                        snowBallFight.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
+                                        return true;
+                                    }
+                                    else{
+                                        commandSender.sendMessage("You gave incorrect arguments!");
+                                    }
+                            }
+                        }
+                        else{
+                            commandSender.sendMessage("you need to provide an argument!");
+                        }
                     case "remove":
                         if (args.length == 2) {
                             commandSender.sendMessage("You need to specify an arena name!");
@@ -143,8 +181,8 @@ public class SnowBallFightCommand implements CommandExecutor {
         commandSender.sendMessage("Name: " + arenaName);
         commandSender.sendMessage("World: " + arena.getWorld());
         commandSender.sendMessage("Region: " + arena.getRegion());
-        for (SpawnPoint s : arena.getSpawns()) {
-            commandSender.sendMessage(s.toString());
+        for (Team s : arena.getSpawns()) {
+            commandSender.sendMessage(s.getSpawnPoint().toString());
         }
 
     }

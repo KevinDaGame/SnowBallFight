@@ -1,40 +1,41 @@
 package com.github.kevindagame;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-
 public class GameTeam {
-    private final Color color;
+    private final ChatColor color;
+    private final Game game;
     private GamePlayer[] players;
     private int wins;
     private int losses;
 
-    public GameTeam(Color color, int maxPlayers) {
+    public GameTeam(Game game, ChatColor color, int maxPlayers) {
         this.color = color;
+        this.game = game;
         players = new GamePlayer[maxPlayers];
         wins = 0;
         losses = 0;
     }
 
     public boolean addPlayer(Player p) {
-        for (int i = 0; i < players.length; i++){
-            if(players[i] == null){
-            GamePlayer gamePlayer = new GamePlayer(p);
-            players[i] = gamePlayer;
-            return true;
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] == null) {
+                GamePlayer gamePlayer = new GamePlayer(p, this);
+                players[i] = gamePlayer;
+                return true;
             }
         }
         return false;
 
     }
 
-    public void win(){
+    public void win() {
         wins++;
     }
 
-    public void lose(){
+    public void lose() {
         losses++;
     }
 
@@ -44,13 +45,23 @@ public class GameTeam {
 
     public int getPlayerCount() {
         int count = 0;
-        for (GamePlayer p: getPlayers()) {
-            if(p != null) count++;
+        for (GamePlayer p : getPlayers()) {
+            if (p != null) count++;
         }
         return count;
     }
 
-    public Color getColor() {
+    public int getAlivePlayers() {
+        int counter = 0;
+        for (GamePlayer p : getPlayers()) {
+            if (p != null && p.isAlive()) {
+                counter++;
+            }
+        }
+        return counter;
+    }
+
+    public ChatColor getColor() {
         return color;
     }
 
@@ -60,5 +71,25 @@ public class GameTeam {
 
     public int getLosses() {
         return losses;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void removeScoreboard() {
+        for (GamePlayer p : getPlayers()) {
+            if (p != null) {
+                p.clearScoreboard();
+            }
+        }
+    }
+
+    public void revive() {
+        for(GamePlayer p : getPlayers()){
+            if(p != null){
+                p.revive();
+            }
+        }
     }
 }

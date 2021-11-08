@@ -2,6 +2,7 @@ package com.github.kevindagame;
 
 import com.github.kevindagame.commands.SnowBallFightCommand;
 import com.github.kevindagame.commands.SnowBallFightTabCompleter;
+import com.github.kevindagame.listeners.PlayerDeath;
 import com.github.kevindagame.listeners.SnowBallHit;
 import com.github.kevindagame.listeners.SnowBallThrow;
 import com.google.gson.Gson;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SnowBallFight extends JavaPlugin {
@@ -36,6 +38,7 @@ public class SnowBallFight extends JavaPlugin {
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
         getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
 
         getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
         getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
@@ -61,20 +64,22 @@ public class SnowBallFight extends JavaPlugin {
             System.out.println("Unable to find Arena's file. Stopping plugin");
             Bukkit.getPluginManager().disablePlugin(this);
         }
-//        ArrayList<SpawnPoint> spawns = new ArrayList<>();
-//        spawns.add(new SpawnPoint(10, 0, 10, "world"));
-//        spawns.add(new SpawnPoint( 1, 10, 10,"world"));
-//        arenas.put("arena1", new Arena("region1", spawns));
-//        arenas.put("arena2", new Arena("region1", spawns));
-//        arenas.put("arena3", new Arena("region1", spawns));
-//        arenas.put("arena4", new Arena("region1", spawns));
-//        arenas.put("arena5", new Arena("region1", spawns));
+//        ArrayList<Team> teams = new ArrayList<>();
+//        teams.add(new Team("GREEN", new SpawnPoint(10, 0, 10, "world")));
+//        teams.add(new Team("AQUA", new SpawnPoint( 1, 10, 10,"world")));
+//
+//        arenas.put("arena1", new Arena("region1", teams, "world"));
+//        arenas.put("arena2", new Arena("region1", teams, "world"));
+//        arenas.put("arena3", new Arena("region1", teams, "world"));
+//        arenas.put("arena4", new Arena("region1", teams, "world"));
+//        arenas.put("arena5", new Arena("region1", teams, "world"));
+//        saveArenasFile();
     }
     @Override
     public void onDisable() {
     }
 
-    private void updateArenasFile(){
+    private void saveArenasFile(){
         String json = gson.toJson(arenas);
         arenasFile.delete();
         try {
@@ -87,7 +92,7 @@ public class SnowBallFight extends JavaPlugin {
     public boolean addArena(String name, World world, String region){
         Arena arena = new Arena(region, world.getName());
         arenas.put(name, arena);
-        updateArenasFile();
+        saveArenasFile();
         return true;
     }
     public Game getGame(){
@@ -124,6 +129,11 @@ public class SnowBallFight extends JavaPlugin {
 
     public void removeArena(String arena) {
         arenas.remove(arena);
-        updateArenasFile();
+        saveArenasFile();
+    }
+
+    public void addTeam(String arena, Team team) {
+        arenas.get(arena).teams.add(team);
+        saveArenasFile();
     }
 }
