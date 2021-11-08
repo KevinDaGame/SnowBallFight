@@ -2,18 +2,21 @@ package com.github.kevindagame;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GameTeam {
     private final ChatColor color;
+    Location spawnLocation;
     private final Game game;
     private GamePlayer[] players;
     private int wins;
     private int losses;
 
-    public GameTeam(Game game, ChatColor color, int maxPlayers) {
+    public GameTeam(Game game, Location spawnLocation, ChatColor color, int maxPlayers) {
         this.color = color;
         this.game = game;
+        this.spawnLocation = spawnLocation;
         players = new GamePlayer[maxPlayers];
         wins = 0;
         losses = 0;
@@ -24,6 +27,7 @@ public class GameTeam {
             if (players[i] == null) {
                 GamePlayer gamePlayer = new GamePlayer(p, this);
                 players[i] = gamePlayer;
+                gamePlayer.getPlayer().teleport(spawnLocation);
                 return true;
             }
         }
@@ -89,6 +93,7 @@ public class GameTeam {
         for(GamePlayer p : getPlayers()){
             if(p != null){
                 p.revive();
+                p.getPlayer().teleport(spawnLocation);
             }
         }
     }

@@ -3,6 +3,7 @@ package com.github.kevindagame;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -45,7 +46,9 @@ public class Game {
         List<Team> tempTeams = arena.getTeams();
         teams = new GameTeam[tempTeams.size()];
         for(int i = 0; i < tempTeams.size(); i++){
-            teams[i] = new GameTeam(this, ChatColor.valueOf(arena.getTeams().get(i).getColor()), maxPlayers);
+            Team team = arena.getTeams().get(i);
+            SpawnPoint spawnPoint = team.getSpawnPoint();
+            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.world), spawnPoint.x, spawnPoint.y, spawnPoint.z),ChatColor.valueOf(team.getColor()), maxPlayers);
         }
     }
 
