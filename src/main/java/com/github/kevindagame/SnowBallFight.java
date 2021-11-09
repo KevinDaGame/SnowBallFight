@@ -118,6 +118,9 @@ public class SnowBallFight extends JavaPlugin {
     public int getDefaultTimeBetweenRound() {
         return config.getInt("default time between round");
     }
+    public int getSnowBallDamage() {
+        return config.getInt("snowball damage");
+    }
 
     public HashMap<String, Arena> getArenas() {
         return arenas;

@@ -14,7 +14,7 @@ public class Game {
     private final SnowBallFight snowBallFight;
     private final int rounds;
     private final int timePerRound;
-    private final int snowBallDamage = 5;
+    private final int snowBallDamage;
     private final int timeBetweenRound;
     private final Arena arena;
     private final int maxPlayers = 5;
@@ -27,6 +27,7 @@ public class Game {
         this.rounds = rounds;
         this.timePerRound = timePerRound;
         this.timeBetweenRound = timeBetweenRound;
+        this.snowBallDamage = snowBallFight.getSnowBallDamage();
         this.arena = arena;
         setRoundStatus(RoundStatus.STARTING);
         createTeams();
@@ -38,6 +39,7 @@ public class Game {
         this.timePerRound = snowBallFight.getDefaultTimePerRound();
         this.timeBetweenRound = snowBallFight.getDefaultTimeBetweenRound();
         this.arena = arena;
+        this.snowBallDamage = snowBallFight.getSnowBallDamage();
         setRoundStatus(RoundStatus.STARTING);
         createTeams();
     }

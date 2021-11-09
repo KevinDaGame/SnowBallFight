@@ -1,5 +1,6 @@
 package com.github.kevindagame;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -114,7 +115,10 @@ public class GameTeam {
         for (GamePlayer p : getPlayers()) {
             if (p != null) {
                 p.revive();
-                p.getPlayer().teleport(spawnLocation);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(game.getMain(), () -> {
+                    p.getPlayer().teleport(spawnLocation);
+
+                }, 20);
             }
         }
     }
