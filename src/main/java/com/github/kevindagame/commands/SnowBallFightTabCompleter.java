@@ -79,9 +79,16 @@ public class SnowBallFightTabCompleter implements TabCompleter {
                         case "teams":
                             switch (args[2]) {
                                 case "add":
-                                    for (ChatColor color : ChatColor.values()) {
-                                        completion.add(color.name());
-                                    }
+                                    completion.add("WHITE");
+                                    completion.add("BLACK");
+                                    completion.add("RED");
+                                    completion.add("AQUA");
+                                    completion.add("BLUE");
+                                    completion.add("GOLD");
+                                    completion.add("GRAY");
+                                    completion.add("GREEN");
+                                    completion.add("YELLOW");
+
                                     return completion;
                             }
                     }

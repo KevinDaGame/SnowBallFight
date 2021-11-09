@@ -1,14 +1,13 @@
 package com.github.kevindagame;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GameTeam {
     private final ChatColor color;
-    Location spawnLocation;
     private final Game game;
+    Location spawnLocation;
     private GamePlayer[] players;
     private int wins;
     private int losses;
@@ -69,6 +68,28 @@ public class GameTeam {
         return color;
     }
 
+    public String getName(ChatColor color) {
+//        switch (color){
+//            case WHITE:
+//                return "white";
+//            case BLACK:
+//            case RED:
+//            case AQUA:
+//            case BLUE:
+//            case DARK_AQUA:
+//            case GOLD:
+//            case GRAY:
+//            case GREEN:
+//            case YELLOW:
+//            case DARK_RED:
+//            case DARK_BLUE:
+//            case DARK_GRAY:
+//            case DARK_GREEN:
+//            case DARK_PURPLE:
+//            case LIGHT_PURPLE:
+        return color.name().toLowerCase();
+    }
+
     public int getWins() {
         return wins;
     }
@@ -90,8 +111,8 @@ public class GameTeam {
     }
 
     public void revive() {
-        for(GamePlayer p : getPlayers()){
-            if(p != null){
+        for (GamePlayer p : getPlayers()) {
+            if (p != null) {
                 p.revive();
                 p.getPlayer().teleport(spawnLocation);
             }

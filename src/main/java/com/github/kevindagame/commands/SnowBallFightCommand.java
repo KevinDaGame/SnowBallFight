@@ -127,6 +127,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                                     if(args.length == 5){
                                         Location l = ((Player) commandSender).getLocation();
                                         snowBallFight.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
+                                        commandSender.sendMessage("succesfully created team with color " + args[3]);
                                         return true;
                                     }
                                     else{
@@ -194,6 +195,7 @@ public class SnowBallFightCommand implements CommandExecutor {
     }
 
     private void showArenaCreateHelp(CommandSender commandSender) {
+        commandSender.sendMessage("/sbf arena create <name> <world> <region>");
     }
 
     private void showHelp(CommandSender commandSender) {

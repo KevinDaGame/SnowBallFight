@@ -1,8 +1,8 @@
 package com.github.kevindagame;
 
+import com.github.kevindagame.Language.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -45,10 +45,10 @@ public class Game {
     private void createTeams() {
         List<Team> tempTeams = arena.getTeams();
         teams = new GameTeam[tempTeams.size()];
-        for(int i = 0; i < tempTeams.size(); i++){
+        for (int i = 0; i < tempTeams.size(); i++) {
             Team team = arena.getTeams().get(i);
             SpawnPoint spawnPoint = team.getSpawnPoint();
-            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.world), spawnPoint.x, spawnPoint.y, spawnPoint.z),ChatColor.valueOf(team.getColor()), maxPlayers);
+            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.world), spawnPoint.x, spawnPoint.y, spawnPoint.z), ChatColor.valueOf(team.getColor()), maxPlayers);
         }
     }
 
@@ -69,7 +69,7 @@ public class Game {
     }
 
     private void reviveTeams() {
-        for(GameTeam team:teams){
+        for (GameTeam team : teams) {
             team.revive();
         }
     }
@@ -80,16 +80,19 @@ public class Game {
     }
 
     private void handleGameEnd() {
-        snowBallFight.stopGame();
         setRoundStatus(RoundStatus.FINISHED);
-        for (GameTeam t : teams) {
-            t.removeScoreboard();
-        }
         GameTeam winnerCandidate = teams[0];
-        for(int i = 1; i < teams.length; i++){
-            if(teams[i].getWins() > winnerCandidate.getWins()) winnerCandidate = teams[i];
+        for (int i = 1; i < teams.length; i++) {
+            if (teams[i].getWins() > winnerCandidate.getWins()) winnerCandidate = teams[i];
         }
-        Bukkit.broadcastMessage("The winner is " + winnerCandidate.getColor() + winnerCandidate.getColor().name());
+        Lang.gameWinner(winnerCandidate);
+        Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
+            snowBallFight.stopGame();
+            for (GameTeam t : teams) {
+                t.removeScoreboard();
+            }
+
+        }, 200);
 
     }
 
@@ -108,6 +111,8 @@ public class Game {
     public String getTimeString() {
         if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
         else if (status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
+        else if (status == RoundStatus.STARTING) return "The game will start soon!";
+        else if (status == RoundStatus.FINISHED) return "The game has finished";
         return "error";
     }
 
@@ -187,19 +192,16 @@ public class Game {
     private void endOfRoundCheck() {
         int team1Players = teams[0].getAlivePlayers();
         int team2Players = teams[1].getAlivePlayers();
-        Bukkit.broadcastMessage(" team 1 has " + team1Players + " players and team 2 has " + team2Players);
-        if(team1Players == team2Players){
+        if (team1Players == team2Players) {
             Bukkit.broadcastMessage("It is a tie");
-        }
-        else if(team1Players > team2Players){
-            Bukkit.broadcastMessage(teams[0].getColor() + teams[0].getColor().name() + " won!");
+        } else if (team1Players > team2Players) {
+            Lang.roundWinner(teams[0]);
             teams[0].win();
             teams[1].lose();
-        }
-        else if(team2Players > team1Players){
-            Bukkit.broadcastMessage(teams[1].getColor() + teams[1].getColor().name() + " won!");
-            teams[0].win();
-            teams[1].lose();
+        } else if (team2Players > team1Players) {
+            Lang.roundWinner(teams[1]);
+            teams[1].win();
+            teams[0].lose();
         }
     }
 
