@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MCPluginDebuggerConfig">
+    <option name="serverJarFile" value="D:\Games\Minecraft\server\paper-1.16.5-788.jar" />
+    <option name="pluginJarFile" value="D:\Games\Minecraft\server\plugins\SnowBallFight-0.1.jar" />
+    <option name="pluginName" value="SnowBallFight" />
+    <option name="host" value="localhost" />
+    <option name="port" value="25565" />
+  </component>
+</project>

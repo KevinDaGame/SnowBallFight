@@ -22,12 +22,11 @@ public class SnowBallHit implements Listener {
         if (event.getEntity() instanceof Snowball) {
             if (event.getEntity().hasMetadata("sbf") || snowBallFight.getGame() != null) {
                 if (snowBallFight.getGame().getRoundStatus() == RoundStatus.RUNNING) {
-                    if (event.getHitEntity() != null && event.getHitEntity() instanceof Player) {
-                        ((Player) event.getHitEntity()).damage(damage);
+                    if (event.getHitEntity() != null && event.getHitEntity() instanceof Player && event.getEntity().getShooter() instanceof Player) {
+                        snowBallFight.getGame().checkHit((Player) event.getEntity().getShooter(), (Player) event.getHitEntity());
                     }
                 }
             }
         }
     }
-
 }

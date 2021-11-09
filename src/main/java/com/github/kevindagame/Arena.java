@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class Arena {
     String region;
-    ArrayList<SpawnPoint> spawns;
+    ArrayList<Team> teams;
     String world;
 
     public String getRegion() {
         return region;
     }
 
-    public ArrayList<SpawnPoint> getSpawns() {
-        return spawns;
+    public ArrayList<Team> getSpawns() {
+        return teams;
     }
 
     public String getWorld() {
@@ -21,9 +21,18 @@ public class Arena {
 
     public Arena(String region, String world) {
         this.region = region;
-        this.spawns = new ArrayList<>();
+        this.teams = new ArrayList<>();
         this.world = world;
 
+    }
 
+    public Arena(String region, ArrayList<Team> teams, String world) {
+        this.region = region;
+        this.teams = teams;
+        this.world = world;
+    }
+
+    public ArrayList<Team> getTeams() {
+        return teams;
     }
 }

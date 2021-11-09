@@ -39,7 +39,7 @@ public class SnowBallThrow implements Listener {
                 }
                 ProtectedRegion region = snowBallFight.getWorldGuard().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(p.getWorld())).getRegion(snowBallFight.getGame().getArena().getRegion());
                 Location loc = p.getLocation();
-                if (region != null && region.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())) {
+                if (region != null && region.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()) && snowBallFight.getGame().getArena().getWorld().equals(p.getWorld().getName())) {
                     if (snowBallFight.getGame().getRoundStatus() != RoundStatus.RUNNING) {
                         event.setCancelled(true);
                         return;
