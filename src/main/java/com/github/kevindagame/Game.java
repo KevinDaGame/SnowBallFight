@@ -238,4 +238,15 @@ public class Game {
     public SnowBallFight getMain() {
         return snowBallFight;
     }
+
+    public GameTeam[] getTeams() {
+        return teams;
+    }
+
+    public GameTeam getOpposingTeam(GameTeam team){
+        if(team.getName().equals(teams[0].getName())){
+            return teams[1];
+        }
+        return teams[0];
+    }
 }

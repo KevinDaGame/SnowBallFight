@@ -69,25 +69,7 @@ public class GameTeam {
         return color;
     }
 
-    public String getName(ChatColor color) {
-//        switch (color){
-//            case WHITE:
-//                return "white";
-//            case BLACK:
-//            case RED:
-//            case AQUA:
-//            case BLUE:
-//            case DARK_AQUA:
-//            case GOLD:
-//            case GRAY:
-//            case GREEN:
-//            case YELLOW:
-//            case DARK_RED:
-//            case DARK_BLUE:
-//            case DARK_GRAY:
-//            case DARK_GREEN:
-//            case DARK_PURPLE:
-//            case LIGHT_PURPLE:
+    public String getName() {
         return color.name().toLowerCase();
     }
 
