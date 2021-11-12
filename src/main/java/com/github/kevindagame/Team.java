@@ -1,7 +1,5 @@
 package com.github.kevindagame;
 
-import org.bukkit.ChatColor;
-
 public class Team {
     String color;
     SpawnPoint spawnPoint;

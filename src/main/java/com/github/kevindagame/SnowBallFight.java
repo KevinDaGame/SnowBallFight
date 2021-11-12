@@ -5,35 +5,17 @@ import com.github.kevindagame.commands.SnowBallFightTabCompleter;
 import com.github.kevindagame.listeners.PlayerDeath;
 import com.github.kevindagame.listeners.SnowBallHit;
 import com.github.kevindagame.listeners.SnowBallThrow;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.sk89q.worldguard.WorldGuard;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class SnowBallFight extends JavaPlugin {
-    private Game game;
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private HashMap<String, Arena> arenas;
-    private File arenasFile;
-    private File configFile;
-    private FileConfiguration config;
     WorldGuard worldGuard = WorldGuard.getInstance();
+    private Game game;
+    private PluginConfig config;
+    private ArenaHandler arenaHandler;
+
     @Override
     public void onEnable() {
         getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
@@ -43,27 +25,15 @@ public class SnowBallFight extends JavaPlugin {
         getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
         getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
 
-        arenasFile = new File(getDataFolder(), "arenas.json");
-        configFile = new File(getDataFolder(), "config.yml");
-
+        File arenasFile = new File(getDataFolder(), "arenas.json");
         if (!arenasFile.exists()) saveResource(arenasFile.getName(), false);
+        arenaHandler = new ArenaHandler(arenasFile);
+
+        File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) saveResource(configFile.getName(), false);
+        config = new PluginConfig(configFile);
 
-        config = new YamlConfiguration();
-        try{
-            config.load(configFile);
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
 
-        try {
-            Type type = new TypeToken<HashMap<String, Arena>>(){}.getType();
-            arenas = gson.fromJson(new FileReader(arenasFile), type);
-            if(arenas == null) arenas = new HashMap<>();
-        } catch (FileNotFoundException e) {
-            System.out.println("Unable to find Arena's file. Stopping plugin");
-            Bukkit.getPluginManager().disablePlugin(this);
-        }
 //        ArrayList<Team> teams = new ArrayList<>();
 //        teams.add(new Team("GREEN", new SpawnPoint(10, 0, 10, "world")));
 //        teams.add(new Team("AQUA", new SpawnPoint( 1, 10, 10,"world")));
@@ -75,31 +45,19 @@ public class SnowBallFight extends JavaPlugin {
 //        arenas.put("arena5", new Arena("region1", teams, "world"));
 //        saveArenasFile();
     }
+
     @Override
     public void onDisable() {
     }
 
-    private void saveArenasFile(){
-        String json = gson.toJson(arenas);
-        arenasFile.delete();
-        try {
-            Files.write(arenasFile.toPath(), json.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.WRITE); // java.nio.Files
-        } catch (IOException e) {
-            System.out.println("Snowballfight: Error on saving arenas!!!!!");
-        }
-    }
-
-    public boolean addArena(String name, World world, String region){
-        Arena arena = new Arena(region, world.getName());
-        arenas.put(name, arena);
-        saveArenasFile();
-        return true;
-    }
-    public Game getGame(){
+    public Game getGame() {
         return game;
     }
 
-    public void setGame(Game game){
+    public void setGame(Game game) {
+        if (getGame() != null) {
+            getGame().stop();
+        }
         this.game = game;
     }
 
@@ -107,33 +65,17 @@ public class SnowBallFight extends JavaPlugin {
         this.game = null;
     }
 
-    public int getDefaultRounds() {
-        return config.getInt("default amount of rounds");
+    public PluginConfig getPluginConfig() {
+        return config;
     }
 
-    public int getDefaultTimePerRound() {
-        return config.getInt("default time per round");
+    public ArenaHandler getArenaHandler() {
+        return arenaHandler;
     }
 
-    public int getDefaultTimeBetweenRound() {
-        return config.getInt("default time between round");
-    }
-
-    public HashMap<String, Arena> getArenas() {
-        return arenas;
-    }
-
-    public WorldGuard getWorldGuard(){
+    public WorldGuard getWorldGuard() {
         return worldGuard;
     }
 
-    public void removeArena(String arena) {
-        arenas.remove(arena);
-        saveArenasFile();
-    }
 
-    public void addTeam(String arena, Team team) {
-        arenas.get(arena).teams.add(team);
-        saveArenasFile();
-    }
 }

@@ -1,7 +1,6 @@
 package com.github.kevindagame.commands;
 
 import com.github.kevindagame.SnowBallFight;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -27,13 +26,14 @@ public class SnowBallFightTabCompleter implements TabCompleter {
             completion.add("create");
             completion.add("join");
             completion.add("arena");
+            completion.add("stop");
             return completion;
         }
 
         if (args.length == 2) {
             switch (args[0]) {
                 case "create":
-                    completion.addAll(snowBallFight.getArenas().keySet());
+                    completion.addAll(snowBallFight.getArenaHandler().getArenas().keySet());
                     return completion;
                 case "arena":
                     completion.add("create");
@@ -65,7 +65,7 @@ public class SnowBallFightTabCompleter implements TabCompleter {
                         case "teams":
                             switch (args[2]) {
                                 case "add":
-                                    completion.addAll(snowBallFight.getArenas().keySet());
+                                    completion.addAll(snowBallFight.getArenaHandler().getArenas().keySet());
                                     return completion;
                             }
                     }
