@@ -13,7 +13,7 @@ public class SpawnPoint {
         this.world = world;
     }
 
-    public String toString(){
+    public String toString() {
         return "X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + world;
     }
 }

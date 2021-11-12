@@ -7,18 +7,6 @@ public class Arena {
     ArrayList<Team> teams;
     String world;
 
-    public String getRegion() {
-        return region;
-    }
-
-    public ArrayList<Team> getSpawns() {
-        return teams;
-    }
-
-    public String getWorld() {
-        return world;
-    }
-
     public Arena(String region, String world) {
         this.region = region;
         this.teams = new ArrayList<>();
@@ -30,6 +18,18 @@ public class Arena {
         this.region = region;
         this.teams = teams;
         this.world = world;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public ArrayList<Team> getSpawns() {
+        return teams;
+    }
+
+    public String getWorld() {
+        return world;
     }
 
     public ArrayList<Team> getTeams() {

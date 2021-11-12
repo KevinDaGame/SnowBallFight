@@ -2,6 +2,7 @@ package com.github.kevindagame;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -103,5 +104,29 @@ public class GameTeam {
                 }, 20);
             }
         }
+    }
+
+    public Color getArmourColor() {
+        switch (color) {
+            case AQUA:
+                return Color.AQUA;
+            case BLACK:
+                return Color.BLACK;
+            case YELLOW:
+                return Color.YELLOW;
+            case BLUE:
+                return Color.BLUE;
+            case GREEN:
+                return Color.GREEN;
+            case RED:
+                return Color.RED;
+            case WHITE:
+                return Color.WHITE;
+            case GRAY:
+                return Color.GRAY;
+            case GOLD:
+                return Color.ORANGE;
+        }
+        return null;
     }
 }

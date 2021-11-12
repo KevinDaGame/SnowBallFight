@@ -26,6 +26,7 @@ public class Scoreboard {
     private Team team2Players;
     private Team team1PlayersRemaining;
     private Team team2PlayersRemaining;
+    private int updateId;
 
     public Scoreboard(GameTeam team, GamePlayer player) {
         this.sbf = team.getGame().getMain();
@@ -85,7 +86,7 @@ public class Scoreboard {
                 updateValues();
             }
         };
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(sbf, Update, 10, 20);
+        updateId = Bukkit.getScheduler().scheduleSyncRepeatingTask(sbf, Update, 10, 20);
     }
 
     private void updateValues() {
@@ -94,7 +95,7 @@ public class Scoreboard {
         timeUntilRoundStart.setPrefix(ChatColor.translateAlternateColorCodes('&', team.getGame().getTimeString()));
         GameTeam[] teams = sbf.getGame().getTeams();
         team1Players.setPrefix("Team " + teams[0].getName() + ": " + teams[0].getColor() + teams[0].getPlayerCount());
-        team2Players.setPrefix("Team " + teams[1].getName() +": " + teams[1].getColor() + teams[1].getPlayerCount());
+        team2Players.setPrefix("Team " + teams[1].getName() + ": " + teams[1].getColor() + teams[1].getPlayerCount());
         team1PlayersRemaining.setPrefix(ChatColor.translateAlternateColorCodes('&', "Opponents remaining: &c" + sbf.getGame().getOpposingTeam(player.getTeam()).getAlivePlayers()));
         team2PlayersRemaining.setPrefix(ChatColor.translateAlternateColorCodes('&', "Teammates remaining: &a" + player.getTeam().getAlivePlayers()));
         kills.setPrefix(ChatColor.translateAlternateColorCodes('&', "Kills: &c" + player.getKills()));
@@ -105,6 +106,7 @@ public class Scoreboard {
 
     public void clearScoreBoard() {
         player.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        Bukkit.getScheduler().cancelTask(updateId);
     }
 
 }

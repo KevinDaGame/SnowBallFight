@@ -31,15 +31,14 @@ public class SnowBallFightCommand implements CommandExecutor {
                     return true;
                 }
                 if (args.length == 2) {
-                    Arena arena = snowBallFight.getArenas().get(args[1].toLowerCase());
+                    Arena arena = snowBallFight.getArenaHandler().getArenas().get(args[1].toLowerCase());
                     if (arena != null) {
-                        snowBallFight.setGame(new Game(snowBallFight, arena));
+                        snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig()));
                         commandSender.sendMessage("succesfully created game");
-                        return true;
                     } else {
                         commandSender.sendMessage("There is no arena with that name!");
-                        return true;
                     }
+                    return true;
                 }
             case "start":
                 if (snowBallFight.getGame() != null) {
@@ -56,6 +55,11 @@ public class SnowBallFightCommand implements CommandExecutor {
                     return true;
                 }
                 commandSender.sendMessage("You need to create a game first before you can start it!");
+                return true;
+            case "stop":
+                if (snowBallFight.getGame() != null) {
+                    snowBallFight.setGame(null);
+                }
                 return true;
             case "give":
                 if (commandSender instanceof Player) {
@@ -75,6 +79,10 @@ public class SnowBallFightCommand implements CommandExecutor {
                         commandSender.sendMessage("you already joined you dumbass");
                         return true;
                     }
+                    if (!p.getInventory().isEmpty()) {
+                        commandSender.sendMessage("You can only join with an empty inventory!");
+                        return true;
+                    }
                     if (!snowBallFight.getGame().join(p)) {
                         commandSender.sendMessage("Sorry, the game is full!");
                         return true;
@@ -88,6 +96,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                     showArenaHelp(commandSender);
                     return true;
                 }
+                ArenaHandler arenaHandler = snowBallFight.getArenaHandler();
                 switch (args[1]) {
                     case "create":
                         if (args.length < 5) {
@@ -104,7 +113,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                             commandSender.sendMessage("There is no world with this name!");
                             return true;
                         }
-                        if (snowBallFight.getArenas().containsKey(args[2].toLowerCase())) {
+                        if (arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
                             commandSender.sendMessage("There is already an arena with that name!");
                             return true;
                         }
@@ -112,30 +121,28 @@ public class SnowBallFightCommand implements CommandExecutor {
                             commandSender.sendMessage("There is no region with this name!");
                             return true;
                         }
-                        if (snowBallFight.addArena(args[2].toLowerCase(), world, args[4])) {
+                        if (arenaHandler.addArena(args[2].toLowerCase(), world, args[4])) {
                             commandSender.sendMessage("successfully created arena with name: " + args[2].toLowerCase());
                             return true;
                         }
                     case "teams":
-                        if(args[2] != null){
-                            switch(args[2]){
+                        if (args[2] != null) {
+                            switch (args[2]) {
                                 case "add":
-                                    if(!(commandSender instanceof Player)){
+                                    if (!(commandSender instanceof Player)) {
                                         commandSender.sendMessage("Sorry, only players can create teams");
                                         return true;
                                     }
-                                    if(args.length == 5){
+                                    if (args.length == 5) {
                                         Location l = ((Player) commandSender).getLocation();
-                                        snowBallFight.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
+                                        arenaHandler.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
                                         commandSender.sendMessage("succesfully created team with color " + args[3]);
                                         return true;
-                                    }
-                                    else{
+                                    } else {
                                         commandSender.sendMessage("You gave incorrect arguments!");
                                     }
                             }
-                        }
-                        else{
+                        } else {
                             commandSender.sendMessage("you need to provide an argument!");
                         }
                     case "remove":
@@ -146,15 +153,15 @@ public class SnowBallFightCommand implements CommandExecutor {
                             commandSender.sendMessage("You have given too many arguments!");
                             return true;
                         }
-                        if (!snowBallFight.getArenas().containsKey(args[2].toLowerCase())) {
+                        if (!arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
                             commandSender.sendMessage("There is no arena with that name!");
                             return true;
                         }
-                        snowBallFight.removeArena(args[2]);
+                        arenaHandler.removeArena(args[2]);
                         commandSender.sendMessage("Successfully removed arena " + args[2].toLowerCase());
                         return true;
                     case "list":
-                        sendArenasList(commandSender);
+                        sendArenasList(arenaHandler, commandSender);
                         return true;
                     case "info":
                         if (args.length == 2) {
@@ -164,11 +171,11 @@ public class SnowBallFightCommand implements CommandExecutor {
                             commandSender.sendMessage("You have given too many arguments!");
                             return true;
                         }
-                        if (!snowBallFight.getArenas().containsKey(args[2].toLowerCase())) {
+                        if (!arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
                             commandSender.sendMessage("There is no arena with that name!");
                             return true;
                         }
-                        sendArenaInfo(args[2], commandSender);
+                        sendArenaInfo(arenaHandler, args[2], commandSender);
                         return true;
 
                 }
@@ -177,8 +184,8 @@ public class SnowBallFightCommand implements CommandExecutor {
         return true;
     }
 
-    private void sendArenaInfo(String arenaName, CommandSender commandSender) {
-        Arena arena = snowBallFight.getArenas().get(arenaName);
+    private void sendArenaInfo(ArenaHandler arenaHandler, String arenaName, CommandSender commandSender) {
+        Arena arena = arenaHandler.getArenas().get(arenaName);
         commandSender.sendMessage("Name: " + arenaName);
         commandSender.sendMessage("World: " + arena.getWorld());
         commandSender.sendMessage("Region: " + arena.getRegion());
@@ -188,8 +195,8 @@ public class SnowBallFightCommand implements CommandExecutor {
 
     }
 
-    private void sendArenasList(CommandSender commandSender) {
-        for (String arenaName : snowBallFight.getArenas().keySet()) {
+    private void sendArenasList(ArenaHandler arenaHandler, CommandSender commandSender) {
+        for (String arenaName : arenaHandler.getArenas().keySet()) {
             commandSender.sendMessage(arenaName);
         }
     }

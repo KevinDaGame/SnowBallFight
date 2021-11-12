@@ -48,8 +48,11 @@ public class SnowBallThrow implements Listener {
                     ItemStack item = new ItemStack(Material.SNOWBALL, 1);
                     Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, new Runnable() {
                         @Override
+
                         public void run() {
-                            p.getInventory().setItemInMainHand(item);
+                            if (snowBallFight.getGame() != null) {
+                                p.getInventory().setItemInMainHand(item);
+                            }
                         }
                     }, delay);
                 } else {

@@ -6,6 +6,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,32 +15,37 @@ public class Game {
     private final SnowBallFight snowBallFight;
     private final int rounds;
     private final int timePerRound;
-    private final int snowBallDamage;
+    private final double snowBallDamage;
     private final int timeBetweenRound;
     private final Arena arena;
     private final int maxPlayers = 5;
+    private final PluginConfig config;
     private Timer timer;
     private RoundStatus status;
     private GameTeam[] teams;
+    private int clearInvTimer;
+    private int gameStopTimer;
 
     public Game(SnowBallFight snowBallFight, int rounds, int timePerRound, int timeBetweenRound, Arena arena) {
         this.snowBallFight = snowBallFight;
         this.rounds = rounds;
         this.timePerRound = timePerRound;
         this.timeBetweenRound = timeBetweenRound;
-        this.snowBallDamage = snowBallFight.getSnowBallDamage();
+        this.snowBallDamage = 1000;
         this.arena = arena;
+        this.config = new PluginConfig(new File(""));
         setRoundStatus(RoundStatus.STARTING);
         createTeams();
     }
 
-    public Game(SnowBallFight snowBallFight, Arena arena) {
+    public Game(SnowBallFight snowBallFight, Arena arena, PluginConfig config) {
         this.snowBallFight = snowBallFight;
-        this.rounds = snowBallFight.getDefaultRounds();
-        this.timePerRound = snowBallFight.getDefaultTimePerRound();
-        this.timeBetweenRound = snowBallFight.getDefaultTimeBetweenRound();
+        this.rounds = config.getDefaultRounds();
+        this.timePerRound = config.getDefaultTimePerRound();
+        this.timeBetweenRound = config.getDefaultTimeBetweenRound();
+        this.snowBallDamage = config.getSnowBallDamage();
         this.arena = arena;
-        this.snowBallDamage = snowBallFight.getSnowBallDamage();
+        this.config = config;
         setRoundStatus(RoundStatus.STARTING);
         createTeams();
     }
@@ -84,17 +90,30 @@ public class Game {
     private void handleGameEnd() {
         setRoundStatus(RoundStatus.FINISHED);
         GameTeam winnerCandidate = teams[0];
+        boolean tie = false;
         for (int i = 1; i < teams.length; i++) {
             if (teams[i].getWins() > winnerCandidate.getWins()) winnerCandidate = teams[i];
+            else if (teams[i].getWins() == winnerCandidate.getWins()) tie = true;
         }
-        Lang.gameWinner(winnerCandidate);
-        Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
+        if (tie) {
+            Lang.noWinner();
+        } else {
+            Lang.gameWinner(winnerCandidate);
+        }
+        gameStopTimer = Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
             snowBallFight.stopGame();
             for (GameTeam t : teams) {
                 t.removeScoreboard();
             }
 
         }, 200);
+        clearInvTimer = Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
+            if (config.getClearInventory()) {
+                for (GamePlayer p : getPlayers()) {
+                    p.getPlayer().getInventory().clear();
+                }
+            }
+        }, 20);
 
     }
 
@@ -230,7 +249,7 @@ public class Game {
         GamePlayer gameHitEntity = getPlayer(hitEntity);
         if (gameShooter != null && gameHitEntity != null) {
             if (gameShooter.getTeam() != gameHitEntity.getTeam()) {
-                hitEntity.damage(snowBallDamage, shooter);
+                hitEntity.damage(config.getSnowBallDamage(), shooter);
             }
         }
     }
@@ -243,10 +262,27 @@ public class Game {
         return teams;
     }
 
-    public GameTeam getOpposingTeam(GameTeam team){
-        if(team.getName().equals(teams[0].getName())){
+    public GameTeam getOpposingTeam(GameTeam team) {
+        if (team.getName().equals(teams[0].getName())) {
             return teams[1];
         }
         return teams[0];
+    }
+
+    public void stop() {
+        if (timer != null) {
+            timer.stopRoundTimer();
+            timer.stopBetweenRoundTimer();
+        }
+        if (Bukkit.getScheduler().isQueued(gameStopTimer)) Bukkit.getScheduler().cancelTask(gameStopTimer);
+        if (Bukkit.getScheduler().isQueued(clearInvTimer)) Bukkit.getScheduler().cancelTask(clearInvTimer);
+        for (GameTeam t : teams) {
+            t.removeScoreboard();
+        }
+        if (config.getClearInventory()) {
+            for (GamePlayer p : getPlayers()) {
+                p.getPlayer().getInventory().clear();
+            }
+        }
     }
 }
