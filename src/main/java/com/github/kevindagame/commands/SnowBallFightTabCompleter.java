@@ -21,6 +21,7 @@ public class SnowBallFightTabCompleter implements TabCompleter {
         List<String> completion = new ArrayList<>();
         if (args.length == 1) {
             completion.add("give");
+            completion.add("help");
             completion.add("start");
             completion.add("create");
             completion.add("join");
@@ -49,6 +50,8 @@ public class SnowBallFightTabCompleter implements TabCompleter {
                 case "arena":
                     switch (args[1]) {
                         case "remove":
+                            completion.addAll(snowBallFight.getArenaHandler().getArenas().keySet());
+                            return completion;
                         case "info":
                         case "teams":
                             completion.add("add");

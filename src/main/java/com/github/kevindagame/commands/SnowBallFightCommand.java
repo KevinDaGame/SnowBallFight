@@ -24,8 +24,12 @@ public class SnowBallFightCommand implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (args.length == 0) {
             showHelp(commandSender);
+            return true;
         }
         switch (args[0]) {
+            case "help":
+                showHelp(commandSender);
+                return true;
             case "create":
                 if (args.length == 1) {
                     Lang.sendMessage(commandSender, "You did not specify any arguments, specify at least an arena!");
@@ -207,9 +211,19 @@ public class SnowBallFightCommand implements CommandExecutor {
     }
 
     private void showHelp(CommandSender commandSender) {
+
+        Lang.sendMessage(commandSender, "Documentation: https://docs.google.com/document/d/1krdCcdG6e2IyK7Z1XVgQv7FJ21heJud2pzx0iiO0dJI/edit?usp=sharing");
+        Lang.sendMessage(commandSender, "Command help:");
+        Lang.sendMessage(commandSender, "&7/sbf arena &f - Create or edit arena's");
+        Lang.sendMessage(commandSender, "&7/sbf create &f - Create a new game");
+        Lang.sendMessage(commandSender, "&7/sbf join &f - Join the current game");
+        Lang.sendMessage(commandSender, "&7/sbf start &f - Start the game after creating");
+        Lang.sendMessage(commandSender, "&7/sbf stop &f - Stop a created game");
+        Lang.sendMessage(commandSender, "&7/sbf help &f - Show this menu");
     }
 
     private void showArenaHelp(CommandSender commandSender) {
+        Lang.sendMessage(commandSender, "Documentation: https://docs.google.com/document/d/1krdCcdG6e2IyK7Z1XVgQv7FJ21heJud2pzx0iiO0dJI/edit?usp=sharing");
 
     }
 }
