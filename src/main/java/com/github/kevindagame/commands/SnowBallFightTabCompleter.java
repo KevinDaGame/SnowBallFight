@@ -19,7 +19,6 @@ public class SnowBallFightTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
         List<String> completion = new ArrayList<>();
-        Player p = (Player) commandSender;
         if (args.length == 1) {
             completion.add("give");
             completion.add("start");
