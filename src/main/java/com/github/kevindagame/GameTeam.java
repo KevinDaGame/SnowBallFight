@@ -129,4 +129,14 @@ public class GameTeam {
         }
         return null;
     }
+
+    public boolean removePlayer(GamePlayer player) {
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] == player) {
+                players[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
 }
