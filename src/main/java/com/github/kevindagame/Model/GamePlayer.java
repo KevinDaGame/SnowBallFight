@@ -1,5 +1,6 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
 
+import com.github.kevindagame.Scoreboard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

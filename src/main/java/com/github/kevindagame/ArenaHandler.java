@@ -1,5 +1,7 @@
 package com.github.kevindagame;
 
+import com.github.kevindagame.Model.Arena;
+import com.github.kevindagame.Model.Team;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -55,7 +57,7 @@ public class ArenaHandler {
     }
 
     public void addTeam(String arena, Team team) {
-        arenas.get(arena).teams.add(team);
+        arenas.get(arena).getTeams().add(team);
         saveArenasFile();
     }
 

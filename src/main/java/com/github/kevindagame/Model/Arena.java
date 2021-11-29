@@ -1,11 +1,13 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
+
+import com.github.kevindagame.Model.Team;
 
 import java.util.ArrayList;
 
 public class Arena {
-    String region;
-    ArrayList<Team> teams;
-    String world;
+    private String region;
+    private ArrayList<Team> teams;
+    private String world;
 
     public Arena(String region, String world) {
         this.region = region;

@@ -1,4 +1,4 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
 
 public class Team {
     String color;

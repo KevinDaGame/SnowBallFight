@@ -1,5 +1,7 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
 
+import com.github.kevindagame.Game;
+import com.github.kevindagame.Model.GamePlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
