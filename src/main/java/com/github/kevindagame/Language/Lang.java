@@ -1,5 +1,6 @@
 package com.github.kevindagame.Language;
 
+import com.github.kevindagame.Model.GameTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

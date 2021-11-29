@@ -1,7 +1,5 @@
 package com.github.kevindagame.Model;
 
-import com.github.kevindagame.Model.Team;
-
 import java.util.ArrayList;
 
 public class Arena {

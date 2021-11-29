@@ -1,10 +1,13 @@
 package com.github.kevindagame.commands;
 
-import com.github.kevindagame.*;
+import com.github.kevindagame.ArenaHandler;
+import com.github.kevindagame.Game;
 import com.github.kevindagame.Language.Lang;
 import com.github.kevindagame.Model.Arena;
 import com.github.kevindagame.Model.SpawnPoint;
 import com.github.kevindagame.Model.Team;
+import com.github.kevindagame.RoundStatus;
+import com.github.kevindagame.SnowBallFight;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
