@@ -3,12 +3,12 @@ version: 0.2
 main: com.github.kevindagame.SnowBallFight
 api-version: 1.16
 author: KevinDaGame
-description:  Custom snowball fight plugin
+description: Custom snowball fight plugin
 permissions:
   sbf.admin:
     default: op
 
-depend: [WorldGuard]
+depend: [ WorldGuard ]
 commands:
   snowballfight:
     description: Main comand

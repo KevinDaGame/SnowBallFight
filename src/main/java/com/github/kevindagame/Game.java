@@ -52,6 +52,85 @@ public class Game {
         createTeams();
     }
 
+    public SnowBallFight getMain() {
+        return snowBallFight;
+    }
+
+    public GameTeam[] getTeams() {
+        return teams;
+    }
+
+    public RoundStatus getRoundStatus() {
+        return status;
+    }
+
+    public void setRoundStatus(RoundStatus status) {
+        this.status = status;
+    }
+
+    public Arena getArena() {
+        return arena;
+    }
+
+    public String getTimeString() {
+        if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
+        else if (status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
+        else if (status == RoundStatus.STARTING) return "The game will start soon!";
+        else if (status == RoundStatus.FINISHED) return "The game has finished";
+        return "error";
+    }
+
+    public ArrayList<GamePlayer> getPlayers() {
+        ArrayList<GamePlayer> players = new ArrayList<>();
+        for (GameTeam t : teams) {
+            for (GamePlayer p : t.getPlayers()) {
+                if (p != null) {
+                    players.add(p);
+                }
+            }
+        }
+        return players;
+    }
+
+    public GamePlayer getPlayer(Player player) {
+        ArrayList<GamePlayer> players = getPlayers();
+        for (GamePlayer p : players) {
+            if (p.getPlayer().getUniqueId() == player.getUniqueId()) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private GameTeam getTeamIdToJoin() {
+        //get minimum playercount
+        int min = teams[0].getPlayerCount();
+        for (int i = 0; i < teams.length; i++) {
+            if (teams[i].getPlayerCount() < min) {
+                min = teams[i].getPlayerCount();
+            }
+        }
+        if (min >= maxPlayers) return null;
+        //get all teams with minimum playercount
+        ArrayList<GameTeam> selectTeams = new ArrayList<>();
+        for (int i = 0; i < teams.length; i++) {
+            if (teams[i].getPlayerCount() == min) {
+                selectTeams.add(teams[i]);
+            }
+
+        }
+        Random random = new Random();
+        int index = random.nextInt(selectTeams.size());
+        return selectTeams.get(index);
+    }
+
+    public GameTeam getOpposingTeam(GameTeam team) {
+        if (team.getName().equals(teams[0].getName())) {
+            return teams[1];
+        }
+        return teams[0];
+    }
+
     private void createTeams() {
         List<Team> tempTeams = arena.getTeams();
         teams = new GameTeam[tempTeams.size()];
@@ -119,73 +198,11 @@ public class Game {
 
     }
 
-    public RoundStatus getRoundStatus() {
-        return status;
-    }
-
-    public void setRoundStatus(RoundStatus status) {
-        this.status = status;
-    }
 
     public Timer getTimer() {
         return timer;
     }
 
-    public String getTimeString() {
-        if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
-        else if (status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
-        else if (status == RoundStatus.STARTING) return "The game will start soon!";
-        else if (status == RoundStatus.FINISHED) return "The game has finished";
-        return "error";
-    }
-
-    public Arena getArena() {
-        return arena;
-    }
-
-    public ArrayList<GamePlayer> getPlayers() {
-        ArrayList<GamePlayer> players = new ArrayList<>();
-        for (GameTeam t : teams) {
-            for (GamePlayer p : t.getPlayers()) {
-                if (p != null) {
-                    players.add(p);
-                }
-            }
-        }
-        return players;
-    }
-
-    public GamePlayer getPlayer(Player player) {
-        ArrayList<GamePlayer> players = getPlayers();
-        for (GamePlayer p : players) {
-            if (p.getPlayer().getUniqueId() == player.getUniqueId()) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    private GameTeam getTeamIdToJoin() {
-        //get minimum playercount
-        int min = teams[0].getPlayerCount();
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i].getPlayerCount() < min) {
-                min = teams[i].getPlayerCount();
-            }
-        }
-        if (min >= maxPlayers) return null;
-        //get all teams with minimum playercount
-        ArrayList<GameTeam> selectTeams = new ArrayList<>();
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i].getPlayerCount() == min) {
-                selectTeams.add(teams[i]);
-            }
-
-        }
-        Random random = new Random();
-        int index = random.nextInt(selectTeams.size());
-        return selectTeams.get(index);
-    }
 
     public boolean join(Player p) {
         GameTeam team = getTeamIdToJoin();
@@ -256,20 +273,6 @@ public class Game {
         }
     }
 
-    public SnowBallFight getMain() {
-        return snowBallFight;
-    }
-
-    public GameTeam[] getTeams() {
-        return teams;
-    }
-
-    public GameTeam getOpposingTeam(GameTeam team) {
-        if (team.getName().equals(teams[0].getName())) {
-            return teams[1];
-        }
-        return teams[0];
-    }
 
     public void stop() {
         if (timer != null) {

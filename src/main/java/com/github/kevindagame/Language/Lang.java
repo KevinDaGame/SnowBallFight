@@ -20,7 +20,7 @@ public class Lang {
         Bukkit.broadcastMessage("The game ended in a tie!");
     }
 
-    public static void sendMessage(CommandSender p, String message){
+    public static void sendMessage(CommandSender p, String message) {
         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&lSBF &8┃ &r" + message));
 
     }
