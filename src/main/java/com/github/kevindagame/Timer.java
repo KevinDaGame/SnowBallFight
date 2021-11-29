@@ -1,5 +1,6 @@
 package com.github.kevindagame;
 
+import com.github.kevindagame.Language.Lang;
 import org.bukkit.Bukkit;
 
 import java.util.function.Consumer;
@@ -53,7 +54,7 @@ public class Timer implements Runnable {
     }
 
     public void startRoundTimer() {
-        Bukkit.broadcastMessage("starting round");
+        Lang.broadcastMessage("starting round");
         game.setRoundStatus(RoundStatus.RUNNING);
         roundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, this, 2, 2);
     }

@@ -177,9 +177,9 @@ public class Game {
             else if (teams[i].getWins() == winnerCandidate.getWins()) tie = true;
         }
         if (tie) {
-            Lang.noWinner();
+            Lang.broadcastMessage("The game ended in a tie!");
         } else {
-            Lang.gameWinner(winnerCandidate);
+            Lang.broadcastMessage("Team " + winnerCandidate.getColor() + winnerCandidate.getColor().name() + ChatColor.RESET + " has won the game with " + winnerCandidate.getWins() + " wins!");
         }
         gameStopTimer = Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
             snowBallFight.stopGame();
@@ -202,7 +202,6 @@ public class Game {
         GameTeam team = getTeamIdToJoin();
         if (team == null) return false;
         team.addPlayer(p);
-        Bukkit.broadcastMessage("team " + teams[0].getColor() + ": " + teams[0].getPlayerCount() + ChatColor.RESET + " team " + teams[1].getColor() + ": " + teams[1].getPlayerCount());
         return true;
     }
 
@@ -214,7 +213,7 @@ public class Game {
     }
 
     public void killPlayer(Player victim, Player killer) {
-        Bukkit.broadcastMessage(victim.getDisplayName() + " was killed by " + killer.getDisplayName());
+        Lang.broadcastMessage(victim.getDisplayName() + " was killed by " + killer.getDisplayName());
         GamePlayer gameVictim = getPlayer(victim);
         GamePlayer gamekiller = getPlayer(killer);
         gameVictim.die();
@@ -227,9 +226,9 @@ public class Game {
         int team1Players = teams[0].getAlivePlayers();
         int team2Players = teams[1].getAlivePlayers();
         if (team1Players == team2Players) {
-            Bukkit.broadcastMessage("It is a tie");
+            Lang.broadcastMessage("It is a tie");
         } else if (team1Players > team2Players) {
-            Lang.roundWinner(teams[0]);
+            Lang.broadcastMessage("Team " + teams[0].getColor() + teams[0].getColor().name() + ChatColor.RESET + " has won this round");
             teams[0].win();
             teams[1].lose();
         } else {
@@ -277,6 +276,18 @@ public class Game {
         if (config.getClearInventory()) {
             for (GamePlayer p : getPlayers()) {
                 p.getPlayer().getInventory().clear();
+            }
+        }
+    }
+
+    public void removePlayer(Player p) {
+        GamePlayer player = getPlayer(p);
+        player.getTeam().removePlayer(player);
+        player.clearScoreboard();
+        for (GameTeam team: teams) {
+            if(team.getPlayerCount() == 0){
+                Lang.broadcastMessage("Game ended prematurely since a team is empty");
+                handleGameEnd();
             }
         }
     }

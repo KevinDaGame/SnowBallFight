@@ -24,4 +24,8 @@ public class Lang {
         p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&e&lSBF &8┃ &r" + message));
 
     }
+    public static void broadcastMessage(String message){
+        Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&e&lSBF &8┃ &r" + message));
+
+    }
 }

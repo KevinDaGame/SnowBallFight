@@ -3,6 +3,7 @@ package com.github.kevindagame;
 import com.github.kevindagame.commands.SnowBallFightCommand;
 import com.github.kevindagame.commands.SnowBallFightTabCompleter;
 import com.github.kevindagame.listeners.PlayerDeath;
+import com.github.kevindagame.listeners.PlayerLeave;
 import com.github.kevindagame.listeners.SnowBallHit;
 import com.github.kevindagame.listeners.SnowBallThrow;
 import com.sk89q.worldguard.WorldGuard;
@@ -21,6 +22,7 @@ public class SnowBallFight extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
         getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
         getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
 
         getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
         getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
