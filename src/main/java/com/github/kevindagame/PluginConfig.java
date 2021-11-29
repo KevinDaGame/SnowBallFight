@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class PluginConfig {
-    private final FileConfiguration reader;
     private final double snowBallDamage;
     private final int rounds;
     private final int timeBetweenRound;
@@ -16,7 +15,7 @@ public class PluginConfig {
     private final boolean clearInventory;
 
     public PluginConfig(File configFile) {
-        reader = new YamlConfiguration();
+        FileConfiguration reader = new YamlConfiguration();
         try {
             reader.load(configFile);
         } catch (IOException | InvalidConfigurationException e) {
@@ -24,7 +23,6 @@ public class PluginConfig {
         }
 
         this.rounds = reader.getInt("default amount of rounds");
-        ;
         this.timePerRound = reader.getInt("default time per round");
         this.timeBetweenRound = reader.getInt("default time between round");
         this.snowBallDamage = reader.getDouble("snowball damage");

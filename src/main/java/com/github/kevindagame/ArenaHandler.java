@@ -20,7 +20,7 @@ public class ArenaHandler {
 
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private HashMap<String, Arena> arenas;
-    private File arenasFile;
+    private final File arenasFile;
 
     public ArenaHandler(File arenasFile) {
         this.arenasFile = arenasFile;

@@ -1,10 +1,10 @@
 package com.github.kevindagame.Model;
 
 public class SpawnPoint {
-    private int x;
-    private int y;
-    private int z;
-    private String world;
+    private final int x;
+    private final int y;
+    private final int z;
+    private final String world;
 
     public SpawnPoint(int x, int y, int z, String world) {
         this.x = x;

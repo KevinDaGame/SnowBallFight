@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 public class GameTeam {
     private final ChatColor color;
     private final Game game;
-    Location spawnLocation;
-    private GamePlayer[] players;
+    final Location spawnLocation;
+    private final GamePlayer[] players;
     private int wins;
     private int losses;
 

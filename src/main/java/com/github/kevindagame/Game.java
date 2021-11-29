@@ -105,17 +105,17 @@ public class Game {
     private GameTeam getTeamIdToJoin() {
         //get minimum playercount
         int min = teams[0].getPlayerCount();
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i].getPlayerCount() < min) {
-                min = teams[i].getPlayerCount();
+        for (GameTeam team : teams) {
+            if (team.getPlayerCount() < min) {
+                min = team.getPlayerCount();
             }
         }
         if (min >= maxPlayers) return null;
         //get all teams with minimum playercount
         ArrayList<GameTeam> selectTeams = new ArrayList<>();
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i].getPlayerCount() == min) {
-                selectTeams.add(teams[i]);
+        for (GameTeam team : teams) {
+            if (team.getPlayerCount() == min) {
+                selectTeams.add(team);
             }
 
         }
@@ -198,12 +198,6 @@ public class Game {
 
     }
 
-
-    public Timer getTimer() {
-        return timer;
-    }
-
-
     public boolean join(Player p) {
         GameTeam team = getTeamIdToJoin();
         if (team == null) return false;
@@ -238,7 +232,7 @@ public class Game {
             Lang.roundWinner(teams[0]);
             teams[0].win();
             teams[1].lose();
-        } else if (team2Players > team1Players) {
+        } else {
             Lang.roundWinner(teams[1]);
             teams[1].win();
             teams[0].lose();
@@ -247,17 +241,13 @@ public class Game {
 
     private void roundWonCheck() {
         ArrayList<GameTeam> alive = new ArrayList<>();
-        ArrayList<GameTeam> dead = new ArrayList<>();
+
         for (GameTeam team : teams) {
             if (team.getAlivePlayers() > 0) {
                 alive.add(team);
-            } else {
-                dead.add(team);
             }
         }
         if (alive.size() == 1) {
-//            alive.get(0).win();
-//            dead.get(0).lose();
             timer.afterRound();
 
         }
@@ -268,7 +258,7 @@ public class Game {
         GamePlayer gameHitEntity = getPlayer(hitEntity);
         if (gameShooter != null && gameHitEntity != null) {
             if (gameShooter.getTeam() != gameHitEntity.getTeam()) {
-                hitEntity.damage(config.getSnowBallDamage(), shooter);
+                hitEntity.damage(snowBallDamage, shooter);
             }
         }
     }

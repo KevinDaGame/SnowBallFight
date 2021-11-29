@@ -3,9 +3,9 @@ package com.github.kevindagame.Model;
 import java.util.ArrayList;
 
 public class Arena {
-    private String region;
-    private ArrayList<Team> teams;
-    private String world;
+    private final String region;
+    private final ArrayList<Team> teams;
+    private final String world;
 
     public Arena(String region, String world) {
         this.region = region;

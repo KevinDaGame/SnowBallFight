@@ -19,7 +19,6 @@ import org.bukkit.metadata.FixedMetadataValue;
 public class SnowBallThrow implements Listener {
 
     private final SnowBallFight snowBallFight;
-    private final long delay = 10;
     private Game game;
 
     public SnowBallThrow(SnowBallFight snowBallFight) {
@@ -46,13 +45,10 @@ public class SnowBallThrow implements Listener {
                     }
                     event.getEntity().setMetadata("sbf", new FixedMetadataValue(snowBallFight, true));
                     ItemStack item = new ItemStack(Material.SNOWBALL, 1);
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, new Runnable() {
-                        @Override
-
-                        public void run() {
-                            if (snowBallFight.getGame() != null) {
-                                p.getInventory().setItemInMainHand(item);
-                            }
+                    long delay = 10;
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
+                        if (snowBallFight.getGame() != null) {
+                            p.getInventory().setItemInMainHand(item);
                         }
                     }, delay);
                 } else {

@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class GamePlayer {
     private final GameTeam team;
     private final Scoreboard scoreboard;
-    private Player player;
+    private final Player player;
     private int kills;
     private boolean isAlive;
 

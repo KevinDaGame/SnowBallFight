@@ -11,11 +11,9 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class SnowBallHit implements Listener {
-    private final long damage;
     private final SnowBallFight snowBallFight;
 
     public SnowBallHit(SnowBallFight snowBallFight, long damage) {
-        this.damage = damage;
         this.snowBallFight = snowBallFight;
     }
 
