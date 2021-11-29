@@ -1,5 +1,6 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
 
+import com.github.kevindagame.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -9,8 +10,8 @@ import org.bukkit.entity.Player;
 public class GameTeam {
     private final ChatColor color;
     private final Game game;
-    Location spawnLocation;
-    private GamePlayer[] players;
+    final Location spawnLocation;
+    private final GamePlayer[] players;
     private int wins;
     private int losses;
 

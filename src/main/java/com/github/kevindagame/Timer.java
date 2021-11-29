@@ -73,16 +73,13 @@ public class Timer implements Runnable {
 
     public void betweenRound() {
         game.setRoundStatus(RoundStatus.BETWEEN);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (betweenCounter >= timeBetweenRound) {
-                    stopBetweenRoundTimer();
+        Runnable runnable = () -> {
+            if (betweenCounter >= timeBetweenRound) {
+                stopBetweenRoundTimer();
 
-                    startRoundTimer();
-                } else {
-                    betweenCounter++;
-                }
+                startRoundTimer();
+            } else {
+                betweenCounter++;
             }
         };
         betweenRoundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, runnable, 0, 20);

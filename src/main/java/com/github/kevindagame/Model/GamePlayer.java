@@ -1,5 +1,6 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
 
+import com.github.kevindagame.Scoreboard;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +10,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class GamePlayer {
     private final GameTeam team;
     private final Scoreboard scoreboard;
-    private Player player;
+    private final Player player;
     private int kills;
     private boolean isAlive;
 

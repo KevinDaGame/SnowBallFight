@@ -1,5 +1,7 @@
 package com.github.kevindagame;
 
+import com.github.kevindagame.Model.GamePlayer;
+import com.github.kevindagame.Model.GameTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -12,9 +14,6 @@ public class Scoreboard {
     private final SnowBallFight sbf;
     private final GameTeam team;
     private final GamePlayer player;
-    private final org.bukkit.scoreboard.Scoreboard board;
-    private final Objective objective;
-    private ScoreboardManager sbm;
     private Team wins;
     private Team timeUntilRoundStart;
     private Team losses;
@@ -33,10 +32,10 @@ public class Scoreboard {
         this.team = team;
         this.player = player;
 
-        sbm = Bukkit.getScoreboardManager();
-        board = sbm.getNewScoreboard();
+        ScoreboardManager sbm = Bukkit.getScoreboardManager();
+        org.bukkit.scoreboard.Scoreboard board = sbm.getNewScoreboard();
 
-        objective = board.registerNewObjective("counter", "dummy", ChatColor.translateAlternateColorCodes('&', "&aSnow&fball&c fight"));
+        Objective objective = board.registerNewObjective("counter", "dummy", ChatColor.translateAlternateColorCodes('&', "&aSnow&fball&c fight"));
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
@@ -80,12 +79,7 @@ public class Scoreboard {
         objective.getScore(ChatColor.LIGHT_PURPLE + "").setScore(6);
         objective.getScore(ChatColor.GRAY + "").setScore(5);
 
-        Runnable Update = new Runnable() {
-            @Override
-            public void run() {
-                updateValues();
-            }
-        };
+        Runnable Update = () -> updateValues();
         updateId = Bukkit.getScheduler().scheduleSyncRepeatingTask(sbf, Update, 10, 20);
     }
 

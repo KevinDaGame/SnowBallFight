@@ -12,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 
 public class SnowBallFight extends JavaPlugin {
-    WorldGuard worldGuard = WorldGuard.getInstance();
+    final WorldGuard worldGuard = WorldGuard.getInstance();
     private Game game;
     private PluginConfig config;
     private ArenaHandler arenaHandler;
@@ -36,16 +36,6 @@ public class SnowBallFight extends JavaPlugin {
         config = new PluginConfig(configFile);
 
 
-//        ArrayList<Team> teams = new ArrayList<>();
-//        teams.add(new Team("GREEN", new SpawnPoint(10, 0, 10, "world")));
-//        teams.add(new Team("AQUA", new SpawnPoint( 1, 10, 10,"world")));
-//
-//        arenas.put("arena1", new Arena("region1", teams, "world"));
-//        arenas.put("arena2", new Arena("region1", teams, "world"));
-//        arenas.put("arena3", new Arena("region1", teams, "world"));
-//        arenas.put("arena4", new Arena("region1", teams, "world"));
-//        arenas.put("arena5", new Arena("region1", teams, "world"));
-//        saveArenasFile();
     }
 
     @Override

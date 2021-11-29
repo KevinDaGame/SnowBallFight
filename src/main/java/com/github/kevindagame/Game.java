@@ -1,6 +1,8 @@
 package com.github.kevindagame;
 
+
 import com.github.kevindagame.Language.Lang;
+import com.github.kevindagame.Model.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -50,13 +52,92 @@ public class Game {
         createTeams();
     }
 
+    public SnowBallFight getMain() {
+        return snowBallFight;
+    }
+
+    public GameTeam[] getTeams() {
+        return teams;
+    }
+
+    public RoundStatus getRoundStatus() {
+        return status;
+    }
+
+    public void setRoundStatus(RoundStatus status) {
+        this.status = status;
+    }
+
+    public Arena getArena() {
+        return arena;
+    }
+
+    public String getTimeString() {
+        if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
+        else if (status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
+        else if (status == RoundStatus.STARTING) return "The game will start soon!";
+        else if (status == RoundStatus.FINISHED) return "The game has finished";
+        return "error";
+    }
+
+    public ArrayList<GamePlayer> getPlayers() {
+        ArrayList<GamePlayer> players = new ArrayList<>();
+        for (GameTeam t : teams) {
+            for (GamePlayer p : t.getPlayers()) {
+                if (p != null) {
+                    players.add(p);
+                }
+            }
+        }
+        return players;
+    }
+
+    public GamePlayer getPlayer(Player player) {
+        ArrayList<GamePlayer> players = getPlayers();
+        for (GamePlayer p : players) {
+            if (p.getPlayer().getUniqueId() == player.getUniqueId()) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    private GameTeam getTeamIdToJoin() {
+        //get minimum playercount
+        int min = teams[0].getPlayerCount();
+        for (GameTeam team : teams) {
+            if (team.getPlayerCount() < min) {
+                min = team.getPlayerCount();
+            }
+        }
+        if (min >= maxPlayers) return null;
+        //get all teams with minimum playercount
+        ArrayList<GameTeam> selectTeams = new ArrayList<>();
+        for (GameTeam team : teams) {
+            if (team.getPlayerCount() == min) {
+                selectTeams.add(team);
+            }
+
+        }
+        Random random = new Random();
+        int index = random.nextInt(selectTeams.size());
+        return selectTeams.get(index);
+    }
+
+    public GameTeam getOpposingTeam(GameTeam team) {
+        if (team.getName().equals(teams[0].getName())) {
+            return teams[1];
+        }
+        return teams[0];
+    }
+
     private void createTeams() {
         List<Team> tempTeams = arena.getTeams();
         teams = new GameTeam[tempTeams.size()];
         for (int i = 0; i < tempTeams.size(); i++) {
             Team team = arena.getTeams().get(i);
             SpawnPoint spawnPoint = team.getSpawnPoint();
-            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.world), spawnPoint.x, spawnPoint.y, spawnPoint.z), ChatColor.valueOf(team.getColor()), maxPlayers);
+            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.getWorld()), spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ()), ChatColor.valueOf(team.getColor()), maxPlayers);
         }
     }
 
@@ -117,74 +198,6 @@ public class Game {
 
     }
 
-    public RoundStatus getRoundStatus() {
-        return status;
-    }
-
-    public void setRoundStatus(RoundStatus status) {
-        this.status = status;
-    }
-
-    public Timer getTimer() {
-        return timer;
-    }
-
-    public String getTimeString() {
-        if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
-        else if (status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
-        else if (status == RoundStatus.STARTING) return "The game will start soon!";
-        else if (status == RoundStatus.FINISHED) return "The game has finished";
-        return "error";
-    }
-
-    public Arena getArena() {
-        return arena;
-    }
-
-    public ArrayList<GamePlayer> getPlayers() {
-        ArrayList<GamePlayer> players = new ArrayList<>();
-        for (GameTeam t : teams) {
-            for (GamePlayer p : t.getPlayers()) {
-                if (p != null) {
-                    players.add(p);
-                }
-            }
-        }
-        return players;
-    }
-
-    public GamePlayer getPlayer(Player player) {
-        ArrayList<GamePlayer> players = getPlayers();
-        for (GamePlayer p : players) {
-            if (p.getPlayer().getUniqueId() == player.getUniqueId()) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    private GameTeam getTeamIdToJoin() {
-        //get minimum playercount
-        int min = teams[0].getPlayerCount();
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i].getPlayerCount() < min) {
-                min = teams[i].getPlayerCount();
-            }
-        }
-        if (min >= maxPlayers) return null;
-        //get all teams with minimum playercount
-        ArrayList<GameTeam> selectTeams = new ArrayList<>();
-        for (int i = 0; i < teams.length; i++) {
-            if (teams[i].getPlayerCount() == min) {
-                selectTeams.add(teams[i]);
-            }
-
-        }
-        Random random = new Random();
-        int index = random.nextInt(selectTeams.size());
-        return selectTeams.get(index);
-    }
-
     public boolean join(Player p) {
         GameTeam team = getTeamIdToJoin();
         if (team == null) return false;
@@ -218,8 +231,8 @@ public class Game {
             Lang.broadcastMessage("Team " + teams[0].getColor() + teams[0].getColor().name() + ChatColor.RESET + " has won this round");
             teams[0].win();
             teams[1].lose();
-        } else if (team2Players > team1Players) {
-            Lang.broadcastMessage("Team " + teams[1].getColor() + teams[1].getColor().name() + ChatColor.RESET + " has won this round");
+        } else {
+            Lang.roundWinner(teams[1]);
             teams[1].win();
             teams[0].lose();
         }
@@ -227,17 +240,13 @@ public class Game {
 
     private void roundWonCheck() {
         ArrayList<GameTeam> alive = new ArrayList<>();
-        ArrayList<GameTeam> dead = new ArrayList<>();
+
         for (GameTeam team : teams) {
             if (team.getAlivePlayers() > 0) {
                 alive.add(team);
-            } else {
-                dead.add(team);
             }
         }
         if (alive.size() == 1) {
-//            alive.get(0).win();
-//            dead.get(0).lose();
             timer.afterRound();
 
         }
@@ -248,25 +257,11 @@ public class Game {
         GamePlayer gameHitEntity = getPlayer(hitEntity);
         if (gameShooter != null && gameHitEntity != null) {
             if (gameShooter.getTeam() != gameHitEntity.getTeam()) {
-                hitEntity.damage(config.getSnowBallDamage(), shooter);
+                hitEntity.damage(snowBallDamage, shooter);
             }
         }
     }
 
-    public SnowBallFight getMain() {
-        return snowBallFight;
-    }
-
-    public GameTeam[] getTeams() {
-        return teams;
-    }
-
-    public GameTeam getOpposingTeam(GameTeam team) {
-        if (team.getName().equals(teams[0].getName())) {
-            return teams[1];
-        }
-        return teams[0];
-    }
 
     public void stop() {
         if (timer != null) {
