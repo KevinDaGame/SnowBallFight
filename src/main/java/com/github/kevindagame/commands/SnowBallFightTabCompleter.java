@@ -45,6 +45,10 @@ public class SnowBallFightTabCompleter implements TabCompleter {
         }
 
         if (args.length == 3) {
+            if(args[0].equals("create")){
+                completion.add("<rounds>");
+                return completion;
+            }
             if ("arena".equals(args[0])) {
                 switch (args[1]) {
                     case "remove":
@@ -59,6 +63,10 @@ public class SnowBallFightTabCompleter implements TabCompleter {
             }
         }
         if (args.length == 4) {
+            if(args[0].equals("create")){
+                completion.add("<minutes>");
+                return completion;
+            }
             if ("arena".equals(args[0])) {
                 if ("teams".equals(args[1])) {
                     if ("add".equals(args[2])) {
@@ -70,6 +78,10 @@ public class SnowBallFightTabCompleter implements TabCompleter {
         }
 
         if (args.length == 5) {
+            if(args[0].equals("create")){
+                completion.add("<teamplayers>");
+                return completion;
+            }
             if ("arena".equals(args[0])) {
                 if ("teams".equals(args[1])) {
                     if ("add".equals(args[2])) {

@@ -59,7 +59,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                             if (Integer.parseInt(args[3]) > 0 && Integer.parseInt(args[3]) < 60) {
                                 if (Integer.parseInt(args[4]) > 0 && Integer.parseInt(args[4]) < 10) {
 
-                                    snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig(), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4])));
+                                    snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig(), Integer.parseInt(args[2]), Integer.parseInt(args[3]) * 60, Integer.parseInt(args[4])));
                                 } else {
                                     Lang.sendMessage(commandSender, "A team can have a maximum of 10 players");
                                 }
@@ -73,6 +73,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                     } else {
                         Lang.sendMessage(commandSender, "There is no arena with that name!");
                     }
+                    return true;
                 }
             case "start":
                 if (snowBallFight.getGame() != null) {
@@ -106,23 +107,29 @@ public class SnowBallFightCommand implements CommandExecutor {
             case "join":
                 if (commandSender instanceof Player) {
                     Player p = (Player) commandSender;
+                    if(args.length == 2){
+                        Player temp = Bukkit.getServer().getPlayer(args[1]);
+                        if (temp != null) {
+                            p = temp;
+                        }
+                    }
                     if (snowBallFight.getGame() == null) {
-                        Lang.sendMessage(commandSender, "There is no current game!");
+                        Lang.sendMessage(p, "There is no current game!");
                         return true;
                     }
                     if (snowBallFight.getGame().hasPlayer(p)) {
-                        Lang.sendMessage(commandSender, "you already joined you dumbass");
+                        Lang.sendMessage(p, "you already joined this game!");
                         return true;
                     }
                     if (!p.getInventory().isEmpty()) {
-                        Lang.sendMessage(commandSender, "You can only join with an empty inventory!");
+                        Lang.sendMessage(p, "You can only join with an empty inventory!");
                         return true;
                     }
                     if (!snowBallFight.getGame().join(p)) {
-                        Lang.sendMessage(commandSender, "Sorry, the game is full!");
+                        Lang.sendMessage(p, "Sorry, the game is full!");
                         return true;
                     }
-                    Lang.sendMessage(commandSender, "Successfully joined game!");
+                    Lang.sendMessage(p, "Successfully joined game!");
                     return true;
 
                 }
