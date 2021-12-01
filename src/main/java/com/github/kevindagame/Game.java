@@ -20,7 +20,7 @@ public class Game {
     private final double snowBallDamage;
     private final int timeBetweenRound;
     private final Arena arena;
-    private final int maxPlayers = 5;
+    private final int maxPlayers;
     private final PluginConfig config;
     private Timer timer;
     private RoundStatus status;
@@ -28,26 +28,28 @@ public class Game {
     private int clearInvTimer;
     private int gameStopTimer;
 
-    public Game(SnowBallFight snowBallFight, int rounds, int timePerRound, int timeBetweenRound, Arena arena) {
+    public Game(SnowBallFight snowBallFight, Arena arena, PluginConfig config, int rounds, int timePerRound, int playersPerTeam) {
         this.snowBallFight = snowBallFight;
+        this.config = config;
         this.rounds = rounds;
+        this.timeBetweenRound = config.getDefaultTimeBetweenRound();
         this.timePerRound = timePerRound;
-        this.timeBetweenRound = timeBetweenRound;
+        this.maxPlayers = playersPerTeam;
         this.snowBallDamage = 1000;
         this.arena = arena;
-        this.config = new PluginConfig(new File(""));
         setRoundStatus(RoundStatus.STARTING);
         createTeams();
     }
 
     public Game(SnowBallFight snowBallFight, Arena arena, PluginConfig config) {
         this.snowBallFight = snowBallFight;
+        this.config = config;
         this.rounds = config.getDefaultRounds();
-        this.timePerRound = config.getDefaultTimePerRound();
         this.timeBetweenRound = config.getDefaultTimeBetweenRound();
+        this.timePerRound = config.getDefaultTimePerRound();
+        this.maxPlayers = 5;
         this.snowBallDamage = config.getSnowBallDamage();
         this.arena = arena;
-        this.config = config;
         setRoundStatus(RoundStatus.STARTING);
         createTeams();
     }
