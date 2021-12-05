@@ -8,48 +8,51 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Game {
     private final SnowBallFight snowBallFight;
-    private final int rounds;
-    private final int timePerRound;
+    private final String afterGameCommand;
     private final double snowBallDamage;
     private final int timeBetweenRound;
     private final Arena arena;
-    private final int maxPlayers = 5;
     private final PluginConfig config;
+    private int rounds;
+    private int timePerRound;
+    private int maxPlayers;
     private Timer timer;
     private RoundStatus status;
     private GameTeam[] teams;
     private int clearInvTimer;
     private int gameStopTimer;
 
-    public Game(SnowBallFight snowBallFight, int rounds, int timePerRound, int timeBetweenRound, Arena arena) {
-        this.snowBallFight = snowBallFight;
+    public Game(SnowBallFight snowBallFight, Arena arena, PluginConfig config, int rounds, int timePerRound, int playersPerTeam) {
+        this(config, snowBallFight, arena);
         this.rounds = rounds;
         this.timePerRound = timePerRound;
-        this.timeBetweenRound = timeBetweenRound;
-        this.snowBallDamage = 1000;
-        this.arena = arena;
-        this.config = new PluginConfig(new File(""));
-        setRoundStatus(RoundStatus.STARTING);
+        this.maxPlayers = playersPerTeam;
         createTeams();
     }
 
     public Game(SnowBallFight snowBallFight, Arena arena, PluginConfig config) {
-        this.snowBallFight = snowBallFight;
-        this.rounds = config.getDefaultRounds();
-        this.timePerRound = config.getDefaultTimePerRound();
-        this.timeBetweenRound = config.getDefaultTimeBetweenRound();
-        this.snowBallDamage = config.getSnowBallDamage();
-        this.arena = arena;
-        this.config = config;
-        setRoundStatus(RoundStatus.STARTING);
+        this(config, snowBallFight, arena);
         createTeams();
+    }
+
+    private Game(PluginConfig config, SnowBallFight sbf, Arena arena) {
+        this.config = config;
+        this.snowBallFight = sbf;
+        this.arena = arena;
+
+        this.afterGameCommand = config.getAfterGameCommand();
+        this.rounds = config.getDefaultRounds();
+        this.timeBetweenRound = config.getDefaultTimeBetweenRound();
+        this.timePerRound = config.getDefaultTimePerRound();
+        this.maxPlayers = config.getMaxPlayers();
+        this.snowBallDamage = config.getSnowBallDamage();
+        setRoundStatus(RoundStatus.STARTING);
     }
 
     public SnowBallFight getMain() {
@@ -74,7 +77,9 @@ public class Game {
 
     public String getTimeString() {
         if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
-        else if (status == RoundStatus.RUNNING) return "Round ends in: " + timer.getSecondsUntilRoundEnd() + " seconds";
+        else if (status == RoundStatus.RUNNING) {
+            return "Round ends in: " + (int)timer.getSecondsUntilRoundEnd() / 60 + "M " + timer.getSecondsUntilRoundEnd() % 60 + "S";
+        }
         else if (status == RoundStatus.STARTING) return "The game will start soon!";
         else if (status == RoundStatus.FINISHED) return "The game has finished";
         return "error";
@@ -149,12 +154,16 @@ public class Game {
                     handleGameEnd();
                 },
                 (t) -> { // after each round
-                    endOfRoundCheck();
+                    if(timer.getRoundsRan() != 1){
+                        endOfRoundCheck();
+
+                    }
                     reviveTeams();
                     handleNextRound(t);
                 }
         );
         timer.startTimerInitial();
+        reviveTeams();
     }
 
     private void reviveTeams() {
@@ -189,10 +198,11 @@ public class Game {
 
         }, 200);
         clearInvTimer = Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
-            if (config.getClearInventory()) {
-                for (GamePlayer p : getPlayers()) {
+            for (GamePlayer p : getPlayers()) {
+                if (config.getClearInventory()) {
                     p.getPlayer().getInventory().clear();
                 }
+                p.getPlayer().performCommand(afterGameCommand);
             }
         }, 20);
 
@@ -284,8 +294,8 @@ public class Game {
         GamePlayer player = getPlayer(p);
         player.getTeam().removePlayer(player);
         player.clearScoreboard();
-        for (GameTeam team: teams) {
-            if(team.getPlayerCount() == 0){
+        for (GameTeam team : teams) {
+            if (team.getPlayerCount() == 0) {
                 Lang.broadcastMessage("Game ended prematurely since a team is empty");
                 handleGameEnd();
             }
