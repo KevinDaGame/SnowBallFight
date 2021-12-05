@@ -1,10 +1,8 @@
-package com.github.kevindagame;
-
-import org.bukkit.ChatColor;
+package com.github.kevindagame.Model;
 
 public class Team {
-    String color;
-    SpawnPoint spawnPoint;
+    final String color;
+    final SpawnPoint spawnPoint;
 
     public Team(String color, SpawnPoint spawnPoint) {
         this.color = color;

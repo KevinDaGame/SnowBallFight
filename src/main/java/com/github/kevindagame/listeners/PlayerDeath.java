@@ -19,11 +19,9 @@ public class PlayerDeath implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event){
-        Bukkit.broadcastMessage("event called");
+    public void onPlayerDeath(PlayerDeathEvent event) {
         Player p = event.getEntity();
-        if(snowBallFight.getGame() == null || p.getKiller() == null){
-            if(p.getKiller() == null) Bukkit.broadcastMessage("killer is null");
+        if (snowBallFight.getGame() == null || p.getKiller() == null) {
             return;
         }
         if (snowBallFight.getGame().getRoundStatus() == RoundStatus.RUNNING) {

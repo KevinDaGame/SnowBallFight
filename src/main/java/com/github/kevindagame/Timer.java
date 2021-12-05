@@ -1,10 +1,11 @@
 package com.github.kevindagame;
 
+import com.github.kevindagame.Language.Lang;
 import org.bukkit.Bukkit;
 
 import java.util.function.Consumer;
 
-public class Timer implements Runnable{
+public class Timer implements Runnable {
     private final SnowBallFight snowBallFight;
     private final Game game;
     private final int rounds;
@@ -29,9 +30,9 @@ public class Timer implements Runnable{
         this.everyRound = everyRound;
     }
 
-    public void afterRound(){
+    public void afterRound() {
         stopRoundTimer();
-        if(roundsRan >= rounds){
+        if (roundsRan >= rounds) {
             gameEnd.run();
             return;
         }
@@ -41,60 +42,58 @@ public class Timer implements Runnable{
     }
 
     public void stopRoundTimer() {
-        Bukkit.getScheduler().cancelTask(roundTaskID);
+        if (Bukkit.getScheduler().isQueued(roundTaskID)) Bukkit.getScheduler().cancelTask(roundTaskID);
         counter = 0;
 
     }
+
     public void stopBetweenRoundTimer() {
-        Bukkit.getScheduler().cancelTask(betweenRoundTaskID);
+        if (Bukkit.getScheduler().isQueued(betweenRoundTaskID)) Bukkit.getScheduler().cancelTask(betweenRoundTaskID);
         betweenCounter = 0;
 
     }
 
     public void startRoundTimer() {
-        Bukkit.broadcastMessage("starting round");
+        Lang.broadcastMessage("starting round");
         game.setRoundStatus(RoundStatus.RUNNING);
         roundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, this, 2, 2);
     }
 
-    public void startTimerInitial(){
+    public void startTimerInitial() {
         afterRound();
     }
 
     @Override
     public void run() {
         counter++;
-        if(counter >= timePerRound * 10){
+        if (counter >= timePerRound * 10) {
             afterRound();
         }
     }
 
     public void betweenRound() {
         game.setRoundStatus(RoundStatus.BETWEEN);
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if(betweenCounter >= timeBetweenRound){
-                    stopBetweenRoundTimer();
+        Runnable runnable = () -> {
+            if (betweenCounter >= timeBetweenRound) {
+                stopBetweenRoundTimer();
 
-                    startRoundTimer();
-                }
-                else{
-                    betweenCounter++;
-                }
+                startRoundTimer();
+            } else {
+                betweenCounter++;
             }
         };
         betweenRoundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, runnable, 0, 20);
     }
 
-    public int getSecondsUntilRoundStart(){
-        if(betweenCounter != 0){
+    public int getSecondsUntilRoundStart() {
+        if (betweenCounter != 0) {
             return timeBetweenRound - betweenCounter;
         }
         return -1;
     }
-    public int getSecondsUntilRoundEnd(){
-        if(counter != 0){
+
+    public int getSecondsUntilRoundEnd() {
+        if (counter != 0) {
             return timePerRound - (counter / 10);
         }
         return -1;

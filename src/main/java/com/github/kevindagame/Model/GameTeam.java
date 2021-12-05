@@ -1,14 +1,17 @@
-package com.github.kevindagame;
+package com.github.kevindagame.Model;
 
+import com.github.kevindagame.Game;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class GameTeam {
     private final ChatColor color;
     private final Game game;
-    Location spawnLocation;
-    private GamePlayer[] players;
+    final Location spawnLocation;
+    private final GamePlayer[] players;
     private int wins;
     private int losses;
 
@@ -68,25 +71,7 @@ public class GameTeam {
         return color;
     }
 
-    public String getName(ChatColor color) {
-//        switch (color){
-//            case WHITE:
-//                return "white";
-//            case BLACK:
-//            case RED:
-//            case AQUA:
-//            case BLUE:
-//            case DARK_AQUA:
-//            case GOLD:
-//            case GRAY:
-//            case GREEN:
-//            case YELLOW:
-//            case DARK_RED:
-//            case DARK_BLUE:
-//            case DARK_GRAY:
-//            case DARK_GREEN:
-//            case DARK_PURPLE:
-//            case LIGHT_PURPLE:
+    public String getName() {
         return color.name().toLowerCase();
     }
 
@@ -114,8 +99,45 @@ public class GameTeam {
         for (GamePlayer p : getPlayers()) {
             if (p != null) {
                 p.revive();
-                p.getPlayer().teleport(spawnLocation);
+                Bukkit.getScheduler().scheduleSyncDelayedTask(game.getMain(), () -> {
+                    p.getPlayer().teleport(spawnLocation);
+
+                }, 20);
             }
         }
+    }
+
+    public Color getArmourColor() {
+        switch (color) {
+            case AQUA:
+                return Color.AQUA;
+            case BLACK:
+                return Color.BLACK;
+            case YELLOW:
+                return Color.YELLOW;
+            case BLUE:
+                return Color.BLUE;
+            case GREEN:
+                return Color.GREEN;
+            case RED:
+                return Color.RED;
+            case WHITE:
+                return Color.WHITE;
+            case GRAY:
+                return Color.GRAY;
+            case GOLD:
+                return Color.ORANGE;
+        }
+        return null;
+    }
+
+    public boolean removePlayer(GamePlayer player) {
+        for (int i = 0; i < players.length; i++) {
+            if (players[i] == player) {
+                players[i] = null;
+                return true;
+            }
+        }
+        return false;
     }
 }
