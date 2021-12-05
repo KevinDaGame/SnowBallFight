@@ -8,16 +8,16 @@ import org.bukkit.command.CommandSender;
 public class Lang {
 
     public static void roundWinner(GameTeam team) {
-        Lang.broadcastMessage("Team " + team.getColor() + team.getColor().name() + ChatColor.RESET + " has won this round");
+        Bukkit.broadcastMessage("Team " + team.getColor() + team.getColor().name() + ChatColor.RESET + " has won this round");
     }
 
     public static void gameWinner(GameTeam team) {
-        Lang.broadcastMessage("Team " + team.getColor() + team.getColor().name() + ChatColor.RESET + " has won the game with " + team.getWins() + " wins!");
+        Bukkit.broadcastMessage("Team " + team.getColor() + team.getColor().name() + ChatColor.RESET + " has won the game with " + team.getWins() + " wins!");
     }
 
 
     public static void noWinner() {
-        Lang.broadcastMessage("The game ended in a tie!");
+        Bukkit.broadcastMessage("The game ended in a tie!");
     }
 
     public static void sendMessage(CommandSender p, String message) {

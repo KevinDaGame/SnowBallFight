@@ -96,10 +96,6 @@ public class Timer implements Runnable {
         if (counter != 0) {
             return timePerRound - (counter / 10);
         }
-        return 0;
-    }
-
-    public int getRoundsRan() {
-        return roundsRan;
+        return -1;
     }
 }

@@ -6,7 +6,3 @@ default amount of rounds: 3
 snowball damage: 5
 
 clear player inventory on game end: false
-max players per team: 5
-
-# this command will be ran by every player once the game ends. Use this to warp the player somewhere for example. Do NOT include the /
-command after game: spawn
