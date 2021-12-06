@@ -39,12 +39,36 @@ public class SnowBallFightCommand implements CommandExecutor {
             case "create":
                 if (args.length == 1) {
                     Lang.sendMessage(commandSender, "You did not specify any arguments, specify at least an arena!");
+                    showDocs(commandSender);
                     return true;
                 }
                 if (args.length == 2) {
                     Arena arena = snowBallFight.getArenaHandler().getArenas().get(args[1].toLowerCase());
                     if (arena != null) {
                         snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig()));
+                        Lang.sendMessage(commandSender, "succesfully created game");
+                    } else {
+                        Lang.sendMessage(commandSender, "There is no arena with that name!");
+                    }
+                    return true;
+                }
+                if (args.length == 5) {
+                    Arena arena = snowBallFight.getArenaHandler().getArenas().get(args[1].toLowerCase());
+                    if (arena != null) {
+                        if (Integer.parseInt(args[2]) > 0 && Integer.parseInt(args[2]) < 20) {
+                            if (Integer.parseInt(args[3]) > 0 && Integer.parseInt(args[3]) < 60) {
+                                if (Integer.parseInt(args[4]) > 0 && Integer.parseInt(args[4]) < 10) {
+
+                                    snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig(), Integer.parseInt(args[2]), Integer.parseInt(args[3]) * 60, Integer.parseInt(args[4])));
+                                } else {
+                                    Lang.sendMessage(commandSender, "A team can have a maximum of 10 players");
+                                }
+                            } else {
+                                Lang.sendMessage(commandSender, "A round can't be longer then one hour");
+                            }
+                        } else {
+                            Lang.sendMessage(commandSender, "You can only make 20 rounds!");
+                        }
                         Lang.sendMessage(commandSender, "succesfully created game");
                     } else {
                         Lang.sendMessage(commandSender, "There is no arena with that name!");
@@ -66,6 +90,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                     return true;
                 }
                 Lang.sendMessage(commandSender, "You need to create a game first before you can start it!");
+                showDocs(commandSender);
                 return true;
             case "stop":
                 if (snowBallFight.getGame() != null) {
@@ -82,29 +107,35 @@ public class SnowBallFightCommand implements CommandExecutor {
             case "join":
                 if (commandSender instanceof Player) {
                     Player p = (Player) commandSender;
+                    if(args.length == 2){
+                        Player temp = Bukkit.getServer().getPlayer(args[1]);
+                        if (temp != null) {
+                            p = temp;
+                        }
+                    }
                     if (snowBallFight.getGame() == null) {
-                        Lang.sendMessage(commandSender, "There is no current game!");
+                        Lang.sendMessage(p, "There is no current game!");
                         return true;
                     }
                     if (snowBallFight.getGame().hasPlayer(p)) {
-                        Lang.sendMessage(commandSender, "you already joined you dumbass");
+                        Lang.sendMessage(p, "you already joined this game!");
                         return true;
                     }
                     if (!p.getInventory().isEmpty()) {
-                        Lang.sendMessage(commandSender, "You can only join with an empty inventory!");
+                        Lang.sendMessage(p, "You can only join with an empty inventory!");
                         return true;
                     }
                     if (!snowBallFight.getGame().join(p)) {
-                        Lang.sendMessage(commandSender, "Sorry, the game is full!");
+                        Lang.sendMessage(p, "Sorry, the game is full!");
                         return true;
                     }
-                    Lang.sendMessage(commandSender, "Successfully joined game!");
+                    Lang.sendMessage(p, "Successfully joined game!");
                     return true;
 
                 }
             case "arena":
                 if (args.length == 1) {
-                    showArenaHelp(commandSender);
+                    showDocs(commandSender);
                     return true;
                 }
                 ArenaHandler arenaHandler = snowBallFight.getArenaHandler();
@@ -218,7 +249,7 @@ public class SnowBallFightCommand implements CommandExecutor {
 
     private void showHelp(CommandSender commandSender) {
 
-        Lang.sendMessage(commandSender, "Documentation: https://docs.google.com/document/d/1krdCcdG6e2IyK7Z1XVgQv7FJ21heJud2pzx0iiO0dJI/edit?usp=sharing");
+        showDocs(commandSender);
         Lang.sendMessage(commandSender, "Command help:");
         Lang.sendMessage(commandSender, "&7/sbf arena &f - Create or edit arena's");
         Lang.sendMessage(commandSender, "&7/sbf create &f - Create a new game");
@@ -228,7 +259,7 @@ public class SnowBallFightCommand implements CommandExecutor {
         Lang.sendMessage(commandSender, "&7/sbf help &f - Show this menu");
     }
 
-    private void showArenaHelp(CommandSender commandSender) {
+    private void showDocs(CommandSender commandSender) {
         Lang.sendMessage(commandSender, "Documentation: https://docs.google.com/document/d/1krdCcdG6e2IyK7Z1XVgQv7FJ21heJud2pzx0iiO0dJI/edit?usp=sharing");
 
     }
