@@ -34,6 +34,7 @@ public class SnowBallFightTabCompleter implements TabCompleter {
 
         if (args.length == 3) {
             if(args[0].equals("create")){
+                List<String> completion = new ArrayList<>();
                 completion.add("<rounds>");
                 return completion;
             }
@@ -53,6 +54,7 @@ public class SnowBallFightTabCompleter implements TabCompleter {
         }
         if (args.length == 4) {
             if(args[0].equals("create")){
+                List<String> completion = new ArrayList<>();
                 completion.add("<minutes>");
                 return completion;
             }
@@ -69,6 +71,7 @@ public class SnowBallFightTabCompleter implements TabCompleter {
 
         if (args.length == 5) {
             if(args[0].equals("create")){
+                List<String> completion = new ArrayList<>();
                 completion.add("<teamplayers>");
                 return completion;
             }

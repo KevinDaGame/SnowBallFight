@@ -178,7 +178,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                                     if (args.length == 5) {
                                         Location l = ((Player) commandSender).getLocation();
                                         arenaHandler.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
-                                        Lang.sendMessage(commandSender, "succesfully created team with color " + args[3]);
+                                        Lang.sendMessage(commandSender, "succesfully created team with color " + args[4]);
                                         return true;
                                     } else {
                                         Lang.sendMessage(commandSender, "You gave incorrect arguments!");
