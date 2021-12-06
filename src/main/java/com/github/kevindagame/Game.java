@@ -142,7 +142,7 @@ public class Game {
         for (int i = 0; i < tempTeams.size(); i++) {
             Team team = arena.getTeams().get(i);
             SpawnPoint spawnPoint = team.getSpawnPoint();
-            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.getWorld()), spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ()), ChatColor.valueOf(team.getColor()), maxPlayers);
+            teams[i] = new GameTeam(this, new Location(Bukkit.getWorld(spawnPoint.getWorld()), spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ(), spawnPoint.getPitch(), spawnPoint.getYaw()), ChatColor.valueOf(team.getColor()), maxPlayers);
         }
     }
 
