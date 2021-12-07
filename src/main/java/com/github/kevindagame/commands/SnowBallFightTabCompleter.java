@@ -113,7 +113,6 @@ public class SnowBallFightTabCompleter implements TabCompleter {
 
     private List<String> mainHelp() {
         List<String> completion = new ArrayList<String>();
-        completion.add("give");
         completion.add("help");
         completion.add("start");
         completion.add("create");
