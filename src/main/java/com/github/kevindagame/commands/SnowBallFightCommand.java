@@ -19,6 +19,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SnowBallFightCommand implements CommandExecutor {
     private final SnowBallFight snowBallFight;
 
@@ -39,13 +42,37 @@ public class SnowBallFightCommand implements CommandExecutor {
             case "create":
                 if (args.length == 1) {
                     Lang.sendMessage(commandSender, "You did not specify any arguments, specify at least an arena!");
+                    showDocs(commandSender);
                     return true;
                 }
                 if (args.length == 2) {
                     Arena arena = snowBallFight.getArenaHandler().getArenas().get(args[1].toLowerCase());
                     if (arena != null) {
                         snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig()));
-                        Lang.sendMessage(commandSender, "succesfully created game");
+                        Lang.sendMessage(commandSender, "Succesfully created game");
+                    } else {
+                        Lang.sendMessage(commandSender, "There is no arena with that name!");
+                    }
+                    return true;
+                }
+                if (args.length == 5) {
+                    Arena arena = snowBallFight.getArenaHandler().getArenas().get(args[1].toLowerCase());
+                    if (arena != null) {
+                        if (Integer.parseInt(args[2]) > 0 && Integer.parseInt(args[2]) < 20) {
+                            if (Integer.parseInt(args[3]) > 0 && Integer.parseInt(args[3]) < 60) {
+                                if (Integer.parseInt(args[4]) > 0 && Integer.parseInt(args[4]) < 10) {
+
+                                    snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig(), Integer.parseInt(args[2]), Integer.parseInt(args[3]) * 60, Integer.parseInt(args[4])));
+                                } else {
+                                    Lang.sendMessage(commandSender, "A team can have a maximum of 10 players");
+                                }
+                            } else {
+                                Lang.sendMessage(commandSender, "A round can't be longer then one hour");
+                            }
+                        } else {
+                            Lang.sendMessage(commandSender, "You can only make 20 rounds!");
+                        }
+                        Lang.sendMessage(commandSender, "Succesfully created game");
                     } else {
                         Lang.sendMessage(commandSender, "There is no arena with that name!");
                     }
@@ -66,134 +93,162 @@ public class SnowBallFightCommand implements CommandExecutor {
                     return true;
                 }
                 Lang.sendMessage(commandSender, "You need to create a game first before you can start it!");
+                showDocs(commandSender);
                 return true;
             case "stop":
                 if (snowBallFight.getGame() != null) {
                     snowBallFight.setGame(null);
                 }
                 return true;
-            case "give":
-                if (commandSender instanceof Player) {
-                    ItemStack snowball = new ItemStack(Material.SNOWBALL, 1);
-                    ((Player) commandSender).getInventory().addItem(snowball);
-
-                }
-                return true;
             case "join":
-                if (commandSender instanceof Player) {
-                    Player p = (Player) commandSender;
-                    if (snowBallFight.getGame() == null) {
-                        Lang.sendMessage(commandSender, "There is no current game!");
-                        return true;
-                    }
-                    if (snowBallFight.getGame().hasPlayer(p)) {
-                        Lang.sendMessage(commandSender, "you already joined you dumbass");
-                        return true;
-                    }
-                    if (!p.getInventory().isEmpty()) {
-                        Lang.sendMessage(commandSender, "You can only join with an empty inventory!");
-                        return true;
-                    }
-                    if (!snowBallFight.getGame().join(p)) {
-                        Lang.sendMessage(commandSender, "Sorry, the game is full!");
-                        return true;
-                    }
-                    Lang.sendMessage(commandSender, "Successfully joined game!");
-                    return true;
+                Player p = null;
 
+                if (args.length == 2) {
+                    Player temp = Bukkit.getServer().getPlayer(args[1]);
+                    if (temp != null) {
+                        p = temp;
+                    }
                 }
-            case "arena":
-                if (args.length == 1) {
-                    showArenaHelp(commandSender);
+                else if (commandSender instanceof Player) {
+                    p = (Player) commandSender;
+                }
+                if (p == null) {
+                    Lang.sendMessage(commandSender, "That player could not be found!");
                     return true;
                 }
-                ArenaHandler arenaHandler = snowBallFight.getArenaHandler();
-                switch (args[1]) {
-                    case "create":
-                        if (args.length < 5) {
-                            Lang.sendMessage(commandSender, "You are missing an argument! Correct usage:");
-                            showArenaCreateHelp(commandSender);
-                            return true;
-                        } else if (args.length > 5) {
-                            Lang.sendMessage(commandSender, "You have given too many arguments! Correct usage:");
-                            showArenaCreateHelp(commandSender);
-                            return true;
-                        }
-                        World world = Bukkit.getWorld(args[3]);
-                        if (world == null) {
-                            Lang.sendMessage(commandSender, "There is no world with this name!");
-                            return true;
-                        }
-                        if (arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
-                            Lang.sendMessage(commandSender, "There is already an arena with that name!");
-                            return true;
-                        }
-                        if (!snowBallFight.getWorldGuard().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world)).hasRegion(args[4])) {
-                            Lang.sendMessage(commandSender, "There is no region with this name!");
-                            return true;
-                        }
-                        if (arenaHandler.addArena(args[2].toLowerCase(), world, args[4])) {
-                            Lang.sendMessage(commandSender, "successfully created arena with name: " + args[2].toLowerCase());
-                            return true;
-                        }
-                    case "teams":
-                        if (args[2] != null) {
-                            switch (args[2]) {
-                                case "add":
-                                    if (!(commandSender instanceof Player)) {
-                                        Lang.sendMessage(commandSender, "Sorry, only players can create teams");
-                                        return true;
-                                    }
-                                    if (args.length == 5) {
-                                        Location l = ((Player) commandSender).getLocation();
-                                        arenaHandler.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName())));
-                                        Lang.sendMessage(commandSender, "succesfully created team with color " + args[3]);
-                                        return true;
-                                    } else {
-                                        Lang.sendMessage(commandSender, "You gave incorrect arguments!");
-                                    }
+                if (snowBallFight.getGame() == null) {
+                    Lang.sendMessage(p, "There is no current game!");
+                    return true;
+                }
+                if(snowBallFight.getGame().getRoundStatus() != RoundStatus.STARTING){
+                    Lang.sendMessage(p, "The game has already started!");
+                    return true;
+                }
+                if (snowBallFight.getGame().hasPlayer(p)) {
+                    Lang.sendMessage(p, "You already joined this game!");
+                    return true;
+                }
+                if (!p.getInventory().isEmpty()) {
+                    Lang.sendMessage(p, "You can only join with an empty inventory!");
+                    return true;
+                }
+                if (!snowBallFight.getGame().join(p)) {
+                    Lang.sendMessage(p, "Sorry, the game is full!");
+                    return true;
+                }
+                Lang.sendMessage(p, "Successfully joined game!");
+                return true;
+
+        case "arena":
+        if (args.length == 1) {
+            showDocs(commandSender);
+            return true;
+        }
+        ArenaHandler arenaHandler = snowBallFight.getArenaHandler();
+        switch (args[1]) {
+            case "create":
+                if (args.length < 5) {
+                    Lang.sendMessage(commandSender, "You are missing an argument! Correct usage:");
+                    showArenaCreateHelp(commandSender);
+                    return true;
+                } else if (args.length > 5) {
+                    Lang.sendMessage(commandSender, "You have given too many arguments! Correct usage:");
+                    showArenaCreateHelp(commandSender);
+                    return true;
+                }
+                World world = Bukkit.getWorld(args[3]);
+                if (world == null) {
+                    Lang.sendMessage(commandSender, "There is no world with this name!");
+                    return true;
+                }
+                if (arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
+                    Lang.sendMessage(commandSender, "There is already an arena with that name!");
+                    return true;
+                }
+                if (!snowBallFight.getWorldGuard().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(world)).hasRegion(args[4])) {
+                    Lang.sendMessage(commandSender, "There is no region with this name!");
+                    return true;
+                }
+                if (arenaHandler.addArena(args[2].toLowerCase(), world, args[4])) {
+                    Lang.sendMessage(commandSender, "Successfully created arena with name: &b" + args[2].toLowerCase());
+                    return true;
+                }
+            case "teams":
+                if (args[2] != null) {
+                    switch (args[2]) {
+                        case "add":
+                            if (!(commandSender instanceof Player)) {
+                                Lang.sendMessage(commandSender, "Sorry, only players can create teams");
+                                return true;
                             }
-                        } else {
-                            Lang.sendMessage(commandSender, "you need to provide an argument!");
-                        }
-                    case "remove":
-                        if (args.length == 2) {
-                            Lang.sendMessage(commandSender, "You need to specify an arena name!");
-                            return true;
-                        } else if (args.length > 3) {
-                            Lang.sendMessage(commandSender, "You have given too many arguments!");
-                            return true;
-                        }
-                        if (!arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
-                            Lang.sendMessage(commandSender, "There is no arena with that name!");
-                            return true;
-                        }
-                        arenaHandler.removeArena(args[2]);
-                        Lang.sendMessage(commandSender, "Successfully removed arena " + args[2].toLowerCase());
-                        return true;
-                    case "list":
-                        sendArenasList(arenaHandler, commandSender);
-                        return true;
-                    case "info":
-                        if (args.length == 2) {
-                            Lang.sendMessage(commandSender, "You need to specify an arena name!");
-                            return true;
-                        } else if (args.length > 3) {
-                            Lang.sendMessage(commandSender, "You have given too many arguments!");
-                            return true;
-                        }
-                        if (!arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
-                            Lang.sendMessage(commandSender, "There is no arena with that name!");
-                            return true;
-                        }
-                        sendArenaInfo(arenaHandler, args[2], commandSender);
-                        return true;
-
+                            if (args.length == 5) {
+                                Location l = ((Player) commandSender).getLocation();
+                                List<String> completion = new ArrayList<>();
+                                completion.add("WHITE");
+                                completion.add("BLACK");
+                                completion.add("RED");
+                                completion.add("AQUA");
+                                completion.add("BLUE");
+                                completion.add("GOLD");
+                                completion.add("GRAY");
+                                completion.add("GREEN");
+                                completion.add("YELLOW");
+                                if(!completion.contains(args[4].toUpperCase())){
+                                    Lang.sendMessage(commandSender, "This is not a valid team name! Only single word colours are allowed");
+                                    return true;
+                                }
+                                Team team = new Team(args[4].toUpperCase(), l);
+                                if(!arenaHandler.addTeam(args[3], team)){
+                                    Lang.sendMessage(commandSender, "You can only add a maximum of 2 teams. To remove one, either edit the json file, or recreate the arena");
+                                    return true;
+                                }
+                                Lang.sendMessage(commandSender, "Succesfully created team with color &b" + args[4] + "&r at x: &b" + l.getBlockX() + "&r y: &b" + l.getBlockY() + "&r z: &b" + l.getBlockZ() + "&r with pitch: &b" + Math.round(l.getPitch()) + "&r and yaw: &b" + Math.round(l.getYaw()));
+                                return true;
+                            } else {
+                                Lang.sendMessage(commandSender, "You gave incorrect arguments!");
+                            }
+                    }
+                } else {
+                    Lang.sendMessage(commandSender, "You need to provide an argument!");
                 }
+            case "remove":
+                if (args.length == 2) {
+                    Lang.sendMessage(commandSender, "You need to specify an arena name!");
+                    return true;
+                } else if (args.length > 3) {
+                    Lang.sendMessage(commandSender, "You have given too many arguments!");
+                    return true;
+                }
+                if (!arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
+                    Lang.sendMessage(commandSender, "There is no arena with that name!");
+                    return true;
+                }
+                arenaHandler.removeArena(args[2]);
+                Lang.sendMessage(commandSender, "Successfully removed arena &b" + args[2].toLowerCase());
+                return true;
+            case "list":
+                sendArenasList(arenaHandler, commandSender);
+                return true;
+            case "info":
+                if (args.length == 2) {
+                    Lang.sendMessage(commandSender, "You need to specify an arena name!");
+                    return true;
+                } else if (args.length > 3) {
+                    Lang.sendMessage(commandSender, "You have given too many arguments!");
+                    return true;
+                }
+                if (!arenaHandler.getArenas().containsKey(args[2].toLowerCase())) {
+                    Lang.sendMessage(commandSender, "There is no arena with that name!");
+                    return true;
+                }
+                sendArenaInfo(arenaHandler, args[2], commandSender);
+                return true;
 
         }
-        return true;
+
     }
+        return true;
+}
 
     private void sendArenaInfo(ArenaHandler arenaHandler, String arenaName, CommandSender commandSender) {
         Arena arena = arenaHandler.getArenas().get(arenaName);
@@ -218,7 +273,7 @@ public class SnowBallFightCommand implements CommandExecutor {
 
     private void showHelp(CommandSender commandSender) {
 
-        Lang.sendMessage(commandSender, "Documentation: https://docs.google.com/document/d/1krdCcdG6e2IyK7Z1XVgQv7FJ21heJud2pzx0iiO0dJI/edit?usp=sharing");
+        showDocs(commandSender);
         Lang.sendMessage(commandSender, "Command help:");
         Lang.sendMessage(commandSender, "&7/sbf arena &f - Create or edit arena's");
         Lang.sendMessage(commandSender, "&7/sbf create &f - Create a new game");
@@ -228,7 +283,7 @@ public class SnowBallFightCommand implements CommandExecutor {
         Lang.sendMessage(commandSender, "&7/sbf help &f - Show this menu");
     }
 
-    private void showArenaHelp(CommandSender commandSender) {
+    private void showDocs(CommandSender commandSender) {
         Lang.sendMessage(commandSender, "Documentation: https://docs.google.com/document/d/1krdCcdG6e2IyK7Z1XVgQv7FJ21heJud2pzx0iiO0dJI/edit?usp=sharing");
 
     }

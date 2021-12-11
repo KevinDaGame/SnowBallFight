@@ -13,6 +13,10 @@ public class PluginConfig {
     private final int timeBetweenRound;
     private final int timePerRound;
     private final boolean clearInventory;
+    private final int maxPlayers;
+    private final String afterGameCommand;
+    private final String deathCommand;
+    private final int snowBallDelay;
 
     public PluginConfig(File configFile) {
         FileConfiguration reader = new YamlConfiguration();
@@ -27,6 +31,18 @@ public class PluginConfig {
         this.timeBetweenRound = reader.getInt("default time between round");
         this.snowBallDamage = reader.getDouble("snowball damage");
         this.clearInventory = reader.getBoolean("clear player inventory on game end");
+        this.maxPlayers = reader.getInt("max players per team");
+        this.afterGameCommand = reader.getString("command after game");
+        this.deathCommand = reader.getString("command after death");
+        this.snowBallDelay = reader.getInt("snowball delay");
+    }
+
+    public String getAfterGameCommand() {
+        return afterGameCommand;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
     }
 
     public int getDefaultRounds() {
@@ -47,5 +63,13 @@ public class PluginConfig {
 
     public boolean getClearInventory() {
         return clearInventory;
+    }
+
+    public String getDeathCommand() {
+        return deathCommand;
+    }
+
+    public int getSnowBallDelay() {
+        return snowBallDelay;
     }
 }

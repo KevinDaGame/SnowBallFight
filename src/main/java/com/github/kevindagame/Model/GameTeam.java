@@ -1,11 +1,9 @@
 package com.github.kevindagame.Model;
 
 import com.github.kevindagame.Game;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GameTeam {
     private final ChatColor color;
@@ -72,7 +70,7 @@ public class GameTeam {
     }
 
     public String getName() {
-        return color.name().toLowerCase();
+        return color.name().substring(0, 1).toUpperCase() + color.name().substring(1).toLowerCase();
     }
 
     public int getWins() {
@@ -98,9 +96,14 @@ public class GameTeam {
     public void revive() {
         for (GamePlayer p : getPlayers()) {
             if (p != null) {
-                p.revive();
                 Bukkit.getScheduler().scheduleSyncDelayedTask(game.getMain(), () -> {
+                    p.revive();
                     p.getPlayer().teleport(spawnLocation);
+                    p.getPlayer().setHealth(20);
+                    p.getPlayer().setFoodLevel(20);
+                    if(!p.getPlayer().getInventory().contains(Material.SNOWBALL)){
+                        p.getPlayer().getInventory().addItem(new ItemStack(Material.SNOWBALL, 1));
+                    }
 
                 }, 20);
             }
