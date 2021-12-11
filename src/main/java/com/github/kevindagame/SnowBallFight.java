@@ -2,10 +2,7 @@ package com.github.kevindagame;
 
 import com.github.kevindagame.commands.SnowBallFightCommand;
 import com.github.kevindagame.commands.SnowBallFightTabCompleter;
-import com.github.kevindagame.listeners.PlayerDeath;
-import com.github.kevindagame.listeners.PlayerLeave;
-import com.github.kevindagame.listeners.SnowBallHit;
-import com.github.kevindagame.listeners.SnowBallThrow;
+import com.github.kevindagame.listeners.*;
 import com.sk89q.worldguard.WorldGuard;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,6 +20,7 @@ public class SnowBallFight extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
         getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
         getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerMovement(this), this);
 
         getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
         getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
@@ -54,6 +52,7 @@ public class SnowBallFight extends JavaPlugin {
     }
 
     public void stopGame() {
+        this.game.stop();
         this.game = null;
     }
 

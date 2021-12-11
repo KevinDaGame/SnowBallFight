@@ -49,7 +49,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                     Arena arena = snowBallFight.getArenaHandler().getArenas().get(args[1].toLowerCase());
                     if (arena != null) {
                         snowBallFight.setGame(new Game(snowBallFight, arena, snowBallFight.getPluginConfig()));
-                        Lang.sendMessage(commandSender, "succesfully created game");
+                        Lang.sendMessage(commandSender, "Succesfully created game");
                     } else {
                         Lang.sendMessage(commandSender, "There is no arena with that name!");
                     }
@@ -72,7 +72,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                         } else {
                             Lang.sendMessage(commandSender, "You can only make 20 rounds!");
                         }
-                        Lang.sendMessage(commandSender, "succesfully created game");
+                        Lang.sendMessage(commandSender, "Succesfully created game");
                     } else {
                         Lang.sendMessage(commandSender, "There is no arena with that name!");
                     }
@@ -102,24 +102,30 @@ public class SnowBallFightCommand implements CommandExecutor {
                 return true;
             case "join":
                 Player p = null;
-                if (commandSender instanceof Player) {
-                    p = (Player) commandSender;
-                } else if (args.length == 2) {
+
+                if (args.length == 2) {
                     Player temp = Bukkit.getServer().getPlayer(args[1]);
                     if (temp != null) {
                         p = temp;
                     }
                 }
+                else if (commandSender instanceof Player) {
+                    p = (Player) commandSender;
+                }
                 if (p == null) {
-                    Lang.sendMessage(commandSender, "Could not find player");
+                    Lang.sendMessage(commandSender, "That player could not be found!");
                     return true;
                 }
                 if (snowBallFight.getGame() == null) {
                     Lang.sendMessage(p, "There is no current game!");
                     return true;
                 }
+                if(snowBallFight.getGame().getRoundStatus() != RoundStatus.STARTING){
+                    Lang.sendMessage(p, "The game has already started!");
+                    return true;
+                }
                 if (snowBallFight.getGame().hasPlayer(p)) {
-                    Lang.sendMessage(p, "you already joined this game!");
+                    Lang.sendMessage(p, "You already joined this game!");
                     return true;
                 }
                 if (!p.getInventory().isEmpty()) {
@@ -164,7 +170,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                     return true;
                 }
                 if (arenaHandler.addArena(args[2].toLowerCase(), world, args[4])) {
-                    Lang.sendMessage(commandSender, "successfully created arena with name: " + args[2].toLowerCase());
+                    Lang.sendMessage(commandSender, "Successfully created arena with name: &b" + args[2].toLowerCase());
                     return true;
                 }
             case "teams":
@@ -196,14 +202,14 @@ public class SnowBallFightCommand implements CommandExecutor {
                                     Lang.sendMessage(commandSender, "You can only add a maximum of 2 teams. To remove one, either edit the json file, or recreate the arena");
                                     return true;
                                 }
-                                Lang.sendMessage(commandSender, "succesfully created team with color " + args[4] + " at x=" + l.getBlockX() + " y=" + l.getBlockY() + " z=" + l.getBlockZ() + " with pitch=" + l.getPitch() + " and yaw=" + l.getYaw());
+                                Lang.sendMessage(commandSender, "Succesfully created team with color &b" + args[4] + "&r at x: &b" + l.getBlockX() + "&r y: &b" + l.getBlockY() + "&r z: &b" + l.getBlockZ() + "&r with pitch: &b" + Math.round(l.getPitch()) + "&r and yaw: &b" + Math.round(l.getYaw()));
                                 return true;
                             } else {
                                 Lang.sendMessage(commandSender, "You gave incorrect arguments!");
                             }
                     }
                 } else {
-                    Lang.sendMessage(commandSender, "you need to provide an argument!");
+                    Lang.sendMessage(commandSender, "You need to provide an argument!");
                 }
             case "remove":
                 if (args.length == 2) {
@@ -218,7 +224,7 @@ public class SnowBallFightCommand implements CommandExecutor {
                     return true;
                 }
                 arenaHandler.removeArena(args[2]);
-                Lang.sendMessage(commandSender, "Successfully removed arena " + args[2].toLowerCase());
+                Lang.sendMessage(commandSender, "Successfully removed arena &b" + args[2].toLowerCase());
                 return true;
             case "list":
                 sendArenasList(arenaHandler, commandSender);

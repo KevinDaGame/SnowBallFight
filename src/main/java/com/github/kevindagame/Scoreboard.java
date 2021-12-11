@@ -35,7 +35,7 @@ public class Scoreboard {
         ScoreboardManager sbm = Bukkit.getScoreboardManager();
         org.bukkit.scoreboard.Scoreboard board = sbm.getNewScoreboard();
 
-        Objective objective = board.registerNewObjective("counter", "dummy", ChatColor.translateAlternateColorCodes('&', "&aSnow&fball&c fight"));
+        Objective objective = board.registerNewObjective("counter", "dummy", ChatColor.translateAlternateColorCodes('&', "&aSnow&fball&c Fight"));
 
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
@@ -84,7 +84,8 @@ public class Scoreboard {
     }
 
     private void updateValues() {
-        teamTeam.setPrefix("Your team: " + team.getColor() + team.getColor().name() + "");
+        String color = team.getColor().name();
+        teamTeam.setPrefix("Your team: " + team.getColor() + color.substring(0, 1).toUpperCase() + color.substring(1).toLowerCase());
         border1.setPrefix(ChatColor.translateAlternateColorCodes('&', "&c&m---&a&m---&f&m---&c&m---&a&m---&f&m---"));
         timeUntilRoundStart.setPrefix(ChatColor.translateAlternateColorCodes('&', team.getGame().getTimeString()));
         GameTeam[] teams = sbf.getGame().getTeams();

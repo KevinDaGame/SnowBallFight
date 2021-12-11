@@ -54,7 +54,7 @@ public class Timer implements Runnable {
     }
 
     public void startRoundTimer() {
-        Lang.broadcastMessage("starting round");
+        Lang.broadcastMessage("Starting round");
         game.setRoundStatus(RoundStatus.RUNNING);
         roundTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(snowBallFight, this, 2, 2);
     }

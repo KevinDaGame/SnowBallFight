@@ -72,6 +72,7 @@ public class GamePlayer {
     }
 
     public void revive() {
+
         isAlive = true;
     }
 }

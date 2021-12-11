@@ -19,6 +19,7 @@ public class Game {
     private final int timeBetweenRound;
     private final Arena arena;
     private final PluginConfig config;
+    private final String deathCommand;
     private int rounds;
     private int timePerRound;
     private int maxPlayers;
@@ -47,6 +48,7 @@ public class Game {
         this.arena = arena;
 
         this.afterGameCommand = config.getAfterGameCommand();
+        this.deathCommand = config.getDeathCommand();
         this.rounds = config.getDefaultRounds();
         this.timeBetweenRound = config.getDefaultTimeBetweenRound();
         this.timePerRound = config.getDefaultTimePerRound();
@@ -78,9 +80,8 @@ public class Game {
     public String getTimeString() {
         if (status == RoundStatus.BETWEEN) return "Round starts in: " + timer.getSecondsUntilRoundStart() + " seconds";
         else if (status == RoundStatus.RUNNING) {
-            return "Round ends in: " + (int)timer.getSecondsUntilRoundEnd() / 60 + "M " + timer.getSecondsUntilRoundEnd() % 60 + "S";
-        }
-        else if (status == RoundStatus.STARTING) return "The game will start soon!";
+            return "Round ends in: " + (int) timer.getSecondsUntilRoundEnd() / 60 + "M " + timer.getSecondsUntilRoundEnd() % 60 + "S";
+        } else if (status == RoundStatus.STARTING) return "The game will start soon!";
         else if (status == RoundStatus.FINISHED) return "The game has finished";
         return "error";
     }
@@ -154,7 +155,7 @@ public class Game {
                     handleGameEnd();
                 },
                 (t) -> { // after each round
-                    if(timer.getRoundsRan() != 1){
+                    if (timer.getRoundsRan() != 1) {
                         endOfRoundCheck();
 
                     }
@@ -188,7 +189,8 @@ public class Game {
         if (tie) {
             Lang.broadcastMessage("The game ended in a tie!");
         } else {
-            Lang.broadcastMessage("Team " + winnerCandidate.getColor() + winnerCandidate.getColor().name() + ChatColor.RESET + " has won the game with " + winnerCandidate.getWins() + " wins!");
+            Lang.gameWinner(winnerCandidate);
+//            Lang.broadcastMessage("Team " + winnerCandidate.getColor() + winnerCandidate.getColor().name() + ChatColor.RESET + " has won the game with " + winnerCandidate.getWins() + " wins!");
         }
         gameStopTimer = Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
             snowBallFight.stopGame();
@@ -202,7 +204,6 @@ public class Game {
                 if (config.getClearInventory()) {
                     p.getPlayer().getInventory().clear();
                 }
-                p.getPlayer().performCommand(afterGameCommand);
             }
         }, 20);
 
@@ -228,7 +229,9 @@ public class Game {
         GamePlayer gamekiller = getPlayer(killer);
         gameVictim.die();
         gamekiller.addKill();
-
+        Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
+            victim.performCommand(deathCommand);
+        }, 10);
         roundWonCheck();
     }
 
@@ -238,7 +241,7 @@ public class Game {
         if (team1Players == team2Players) {
             Lang.broadcastMessage("It is a tie");
         } else if (team1Players > team2Players) {
-            Lang.broadcastMessage("Team " + teams[0].getColor() + teams[0].getColor().name() + ChatColor.RESET + " has won this round");
+            Lang.roundWinner(teams[0]);
             teams[0].win();
             teams[1].lose();
         } else {
@@ -283,10 +286,12 @@ public class Game {
         for (GameTeam t : teams) {
             t.removeScoreboard();
         }
-        if (config.getClearInventory()) {
-            for (GamePlayer p : getPlayers()) {
+        for (GamePlayer p : getPlayers()) {
+            if (config.getClearInventory()) {
                 p.getPlayer().getInventory().clear();
             }
+            p.getPlayer().setHealth(20);
+            p.getPlayer().performCommand(afterGameCommand);
         }
     }
 

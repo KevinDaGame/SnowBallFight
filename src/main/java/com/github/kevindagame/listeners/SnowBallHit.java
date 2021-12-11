@@ -35,7 +35,8 @@ public class SnowBallHit implements Listener {
         if (snowBallFight.getGame() != null) {
             if (event.getEntity() instanceof Player && event.getDamager() instanceof Player && snowBallFight.getGame().hasPlayer((Player) event.getEntity()) && snowBallFight.getGame().hasPlayer((Player) event.getDamager()) && (int) event.getDamage() * 10 != (int) snowBallFight.getPluginConfig().getSnowBallDamage() * 10) {
                 event.setCancelled(true);
-            } else {
+            }
+            else {
                 event.setDamage(EntityDamageEvent.DamageModifier.ARMOR, 0);
                 event.setDamage(EntityDamageEvent.DamageModifier.ABSORPTION, 0);
                 event.setDamage(EntityDamageEvent.DamageModifier.BLOCKING, 0);

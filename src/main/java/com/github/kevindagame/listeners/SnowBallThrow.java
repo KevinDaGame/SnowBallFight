@@ -36,6 +36,9 @@ public class SnowBallThrow implements Listener {
                 if (snowBallFight.getGame() == null) {
                     return;
                 }
+                if(!snowBallFight.getGame().hasPlayer(p)){
+                    return;
+                }
                 ProtectedRegion region = snowBallFight.getWorldGuard().getPlatform().getRegionContainer().get(BukkitAdapter.adapt(p.getWorld())).getRegion(snowBallFight.getGame().getArena().getRegion());
                 Location loc = p.getLocation();
                 if (region != null && region.contains(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()) && snowBallFight.getGame().getArena().getWorld().equals(p.getWorld().getName())) {
@@ -45,7 +48,7 @@ public class SnowBallThrow implements Listener {
                     }
                     event.getEntity().setMetadata("sbf", new FixedMetadataValue(snowBallFight, true));
                     ItemStack item = new ItemStack(Material.SNOWBALL, 1);
-                    long delay = 10;
+                    long delay = snowBallFight.getPluginConfig().getSnowBallDelay();
                     Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
                         if (snowBallFight.getGame() != null) {
                             p.getInventory().setItemInMainHand(item);
