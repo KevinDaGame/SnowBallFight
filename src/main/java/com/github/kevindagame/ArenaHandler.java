@@ -56,9 +56,14 @@ public class ArenaHandler {
         saveArenasFile();
     }
 
-    public void addTeam(String arena, Team team) {
-        arenas.get(arena).getTeams().add(team);
-        saveArenasFile();
+    public boolean addTeam(String arena, Team team) {
+        Arena a = arenas.get(arena);
+        if(a.getTeams().size() < 2){
+            a.getTeams().add(team);
+            saveArenasFile();
+            return true;
+        }
+        return false;
     }
 
     public HashMap<String, Arena> getArenas() {

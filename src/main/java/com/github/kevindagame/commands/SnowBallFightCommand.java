@@ -19,6 +19,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SnowBallFightCommand implements CommandExecutor {
     private final SnowBallFight snowBallFight;
 
@@ -174,7 +177,25 @@ public class SnowBallFightCommand implements CommandExecutor {
                             }
                             if (args.length == 5) {
                                 Location l = ((Player) commandSender).getLocation();
-                                arenaHandler.addTeam(args[3], new Team(args[4], new SpawnPoint(l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getPitch(), l.getYaw(), l.getWorld().getName())));
+                                List<String> completion = new ArrayList<>();
+                                completion.add("WHITE");
+                                completion.add("BLACK");
+                                completion.add("RED");
+                                completion.add("AQUA");
+                                completion.add("BLUE");
+                                completion.add("GOLD");
+                                completion.add("GRAY");
+                                completion.add("GREEN");
+                                completion.add("YELLOW");
+                                if(!completion.contains(args[4].toUpperCase())){
+                                    Lang.sendMessage(commandSender, "This is not a valid team name! Only single word colours are allowed");
+                                    return true;
+                                }
+                                Team team = new Team(args[4].toUpperCase(), l);
+                                if(!arenaHandler.addTeam(args[3], team)){
+                                    Lang.sendMessage(commandSender, "You can only add a maximum of 2 teams. To remove one, either edit the json file, or recreate the arena");
+                                    return true;
+                                }
                                 Lang.sendMessage(commandSender, "succesfully created team with color " + args[4] + " at x=" + l.getBlockX() + " y=" + l.getBlockY() + " z=" + l.getBlockZ() + " with pitch=" + l.getPitch() + " and yaw=" + l.getYaw());
                                 return true;
                             } else {
