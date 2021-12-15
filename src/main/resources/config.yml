@@ -1,6 +1,6 @@
 #all time formats are in seconds
 default time per round: 60
-default time between round: 20
+default time between round: 10
 default amount of rounds: 3
 # 1 to 20. each number is half a heart
 snowball damage: 5
