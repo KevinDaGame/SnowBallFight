@@ -7,6 +7,8 @@ snowball damage: 5
 # each number increases by 1/20th of a second
 snowball delay: 30
 clear player inventory on game end: false
+#Make players unable to roam the arena before games and between rounds
+restrict movement: true
 max players per team: 5
 
 # this command will be ran by every player once the game ends. Use this to warp the player somewhere for example. Do NOT include the /

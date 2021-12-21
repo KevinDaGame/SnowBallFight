@@ -17,6 +17,7 @@ public class PluginConfig {
     private final String afterGameCommand;
     private final String deathCommand;
     private final int snowBallDelay;
+    private final boolean restrictMovement;
 
     public PluginConfig(File configFile) {
         FileConfiguration reader = new YamlConfiguration();
@@ -35,6 +36,11 @@ public class PluginConfig {
         this.afterGameCommand = reader.getString("command after game");
         this.deathCommand = reader.getString("command after death");
         this.snowBallDelay = reader.getInt("snowball delay");
+        this.restrictMovement = reader.getBoolean("restrict movement");
+    }
+
+    public boolean restrictMovement() {
+        return restrictMovement;
     }
 
     public String getAfterGameCommand() {

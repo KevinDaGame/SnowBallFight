@@ -16,15 +16,6 @@ public class SnowBallFight extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
-        getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
-        getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerMovement(this), this);
-
-        getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
-        getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
-
         File arenasFile = new File(getDataFolder(), "arenas.json");
         if (!arenasFile.exists()) saveResource(arenasFile.getName(), false);
         arenaHandler = new ArenaHandler(arenasFile);
@@ -32,6 +23,17 @@ public class SnowBallFight extends JavaPlugin {
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) saveResource(configFile.getName(), false);
         config = new PluginConfig(configFile);
+
+        getServer().getPluginManager().registerEvents(new SnowBallThrow(this), this);
+        getServer().getPluginManager().registerEvents(new SnowBallHit(this, 5), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeath(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
+        if (config.restrictMovement()) {
+            getServer().getPluginManager().registerEvents(new PlayerMovement(this), this);
+        }
+
+        getCommand("snowballfight").setExecutor(new SnowBallFightCommand(this));
+        getCommand("snowballfight").setTabCompleter(new SnowBallFightTabCompleter(this));
 
 
     }
