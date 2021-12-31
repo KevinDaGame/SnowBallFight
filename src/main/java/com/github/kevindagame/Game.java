@@ -167,7 +167,7 @@ public class Game {
         reviveTeams();
     }
 
-    private void reviveTeams() {
+    public void reviveTeams() {
         for (GameTeam team : teams) {
             team.revive();
         }
@@ -198,7 +198,7 @@ public class Game {
                 t.removeScoreboard();
             }
 
-        }, 200);
+        }, 220);
         clearInvTimer = Bukkit.getScheduler().scheduleSyncDelayedTask(snowBallFight, () -> {
             for (GamePlayer p : getPlayers()) {
                 if (config.getClearInventory()) {

@@ -76,7 +76,7 @@ public class Timer implements Runnable {
         Runnable runnable = () -> {
             if (betweenCounter >= timeBetweenRound) {
                 stopBetweenRoundTimer();
-
+                game.reviveTeams();
                 startRoundTimer();
             } else {
                 betweenCounter++;
